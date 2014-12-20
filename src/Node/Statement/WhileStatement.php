@@ -11,13 +11,13 @@ class WhileStatement extends Statement
 	 */
 	public $type = Syntax::WhileStatement;
 	/**
-	 * @var Statement
-	 */
-	public $body;
-	/**
 	 * @var Expression
 	 */
 	public $test;
+	/**
+	 * @var Statement
+	 */
+	public $body;
 
 	/**
 	 * @param EsprimaPHP $esprima

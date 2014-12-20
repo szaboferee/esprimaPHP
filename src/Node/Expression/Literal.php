@@ -25,11 +25,6 @@ class Literal extends Expression
 	public $raw;
 
 	/**
-	 * @var Regex
-	 */
-	protected  $regex;
-
-	/**
 	 * @param EsprimaPHP $esprima
 	 * @param $token
 	 *

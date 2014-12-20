@@ -111,7 +111,7 @@ class Node implements JsonSerializable
 	{
 		if ($esprima->extra->range) {
 			// start not always set
-			$this->range = [isset($startToken->start) ? $startToken->start : 0, 0];
+			$this->range = [property_exists($startToken, 'start') ? $startToken->start : 0, 0];
 		}
 		if ($esprima->extra->loc) {
 			$this->loc = SourceLocation::createFromParser($esprima, $startToken);
@@ -153,7 +153,7 @@ class Node implements JsonSerializable
 
 		$ret = array();
 		foreach($object as $key => $value) {
-			if($value !== null) {
+			if($value !== null || !property_exists('Node', $key)) {
 				$ret[$key] = $value;
 			}
 		}

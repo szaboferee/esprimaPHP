@@ -17,6 +17,7 @@ use EsprimaPhp\Node\Expression\ObjectExpression;
 use EsprimaPhp\Node\Expression\PostfixExpression;
 use EsprimaPhp\Node\Expression\SequenceExpression;
 use EsprimaPhp\Node\Expression\UnaryExpression;
+use EsprimaPhp\Node\Expression\UpdateExpression;
 use EsprimaPhp\Node\Identifier;
 use EsprimaPhp\Node\Program;
 use EsprimaPhp\Node\Property;
@@ -1149,7 +1150,7 @@ class Parser {
 
 		$previousStrict = $this->strict;
 		$body = $this->parseFunctionSourceElements();
-		if ($first && $this->strict && Helper::isRestrictedWord($param[0]->name)) {
+		if ($first && $this->strict && Helper::isRestrictedWord(isset($param[0]) ? $param[0]->name : '')) {
 			$this->throwErrorTolerant($first, Messages::StrictParamName);
 		}
 		$this->strict = $previousStrict;
@@ -1483,7 +1484,7 @@ class Parser {
 				$this->throwErrorTolerant(null, Messages::InvalidLHSInAssignment);
 			}
 
-			$expr = (new UnaryExpression($this, $startToken))->finish($this, $token->value, $expr);
+			$expr = (new UpdateExpression($this, $startToken))->finish($this, $token->value, $expr);
 		} else if ($this->match('+') || $this->match('-') || $this->match('~') || $this->match('!')) {
 			$startToken = $this->lookahead;
 			$token = $this->lex();
@@ -2492,7 +2493,8 @@ class Parser {
 	{
 		$firstRestricted = null;
 		$message = '';
-		$id = '';
+		$id = null;
+		$node = new FunctionExpression($this);
 		$this->expectKeyword('function');
 
 		if (!$this->match('(')) {
@@ -2532,7 +2534,7 @@ class Parser {
 		}
 		$this->strict = $previousStrict;
 
-		return new FunctionExpression($this, $id, $params, $defaults, $body);
+		return $node->finish($this, $id, $params, $defaults, $body);
 	}
 	private function parseSourceElements()
 	{
