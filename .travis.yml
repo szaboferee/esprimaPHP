@@ -2,4 +2,8 @@ language: php
 php: 5.4
 before_script: composer install --dev
 script: ./vendor/bin/phpunit --bootstrap ./vendor/autoload.php -v --coverage-clover build/logs/clover.xml test
-after_script: CODECLIMATE_REPO_TOKEN=136a54bb6a53364e99a185c823714cb7d1cce4ac190efc7cbc51c75eec3fb209 ./vendor/bin/test-reporter
+after_script: ./vendor/bin/test-reporter
+
+addons:
+  code_climate:
+    repo_token: 136a54bb6a53364e99a185c823714cb7d1cce4ac190efc7cbc51c75eec3fb209
