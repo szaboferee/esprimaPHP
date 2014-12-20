@@ -56,7 +56,7 @@ class Helper {
 				($id === 'try') || ($id === 'let');
 			case 4:
 				return ($id === 'this') || ($id === 'else') || ($id === 'case') ||
-				($id === 'vo$id') || ($id === 'with') || ($id === 'enum');
+				($id === 'void') || ($id === 'with') || ($id === 'enum');
 			case 5:
 				return ($id === 'while') || ($id === 'break') || ($id === 'catch') ||
 				($id === 'throw') || ($id === 'const') || ($id === 'yield') ||

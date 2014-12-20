@@ -4,41 +4,10 @@ use EsprimaPhp\Node\Expression;
 use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Parser;
 
-class UpdateExpression extends Expression
+class UpdateExpression extends UnaryExpression
 {
 	/**
 	 * @var string
 	 */
 	public $type = Syntax::UpdateExpression;
-
-	/**
-	 * @var UpdateOperator
-	 */
-	public $operator;
-
-	/**
-	 * @var Expression
-	 */
-	public $argument;
-
-	/**
-	 * @var
-	 */
-	public $prefix;
-
-	/**
-	 * @param Parser $esprima
-	 * @param UnaryOperator $operator
-	 * @param Expression $argument
-	 *
-	 * @return UnaryExpression
-	 */
-	public function finish($esprima, $operator, $argument)
-	{
-		$this->operator = $operator;
-		$this->argument = $argument;
-		$this->prefix = true;
-		return $this->finishNode($esprima);
-	}
-
-} 
+}
