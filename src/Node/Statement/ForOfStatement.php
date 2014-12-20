@@ -2,6 +2,9 @@
 
 namespace EsprimaPhp\Node\Statement;
 
+use EsprimaPhp\Node\Statement;
+use EsprimaPhp\Parser\Syntax;
+
 class ForOfStatement extends Statement {
 	public $type = Syntax::ForOfStatement;
 	/**
@@ -26,7 +29,7 @@ class ForOfStatement extends Statement {
 		$this->left = $left;
 		$this->right = $right;
 		$this->body = $body;
-		return parent::finish($esprima);
+		return $this->finishNode($esprima);
 	}
 
 } 

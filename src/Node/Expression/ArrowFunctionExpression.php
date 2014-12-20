@@ -1,5 +1,8 @@
 <?php
 namespace EsprimaPhp\Node\Expression;
+use EsprimaPhp\Node\Expression;
+use EsprimaPhp\Parser\Syntax;
+
 /**
  * Class ArrowFunctionExpression
  */
@@ -57,7 +60,7 @@ class ArrowFunctionExpression extends Expression
 		$this->rest = null;
 		$this->generator = false;
 		$this->expression = $expression;
-		return parent::finish($esprima);
+		return $this->finishNode($esprima);
 	}
 
 } 

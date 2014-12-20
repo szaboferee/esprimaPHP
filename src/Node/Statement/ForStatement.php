@@ -1,6 +1,9 @@
 <?php
 namespace EsprimaPhp\Node\Statement;
 
+use EsprimaPhp\Node\Statement;
+use EsprimaPhp\Parser\Syntax;
+
 class ForStatement extends Statement
 {
 	/**
@@ -30,6 +33,6 @@ class ForStatement extends Statement
 		$this->update = $update;
 		$this->body = $body;
 
-		return parent::finish($esprima);
+		return $this->finishNode($esprima);
 	}
 } 

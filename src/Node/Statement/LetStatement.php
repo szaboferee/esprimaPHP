@@ -1,6 +1,9 @@
 <?php
 namespace EsprimaPhp\Node\Statement;
 
+use EsprimaPhp\Node\Statement;
+use EsprimaPhp\Parser\Syntax;
+
 class LetStatement extends Statement
 {
 	/**
@@ -20,7 +23,7 @@ class LetStatement extends Statement
 	{
 		$this->head = $head;
 		$this->body = $body;
-		return parent::finish($esprima);
+		return $this->finishNode($esprima);
 	}
 
 
