@@ -1593,6 +1593,9 @@ class Parser {
 		$defaultCount = 0;
 		$rest = null;
 		$options = new stdClass();
+		$options->stricted = false;
+		$options->firstRestricted = false;
+		$options->message = false;
 		$options->paramSet = new ArrayList();
 
 		for ($i = 0, $len = count($expressions); $i < $len; $i += 1) {
@@ -1649,7 +1652,7 @@ class Parser {
 
 		$this->strict = $previousStrict;
 
-		return  $node->finish('ArrowFunctionExpression', $this, $options->params, $options->defaults, $body, $body->type !== Syntax::BlockStatement);
+		return  $node->finish('\EsprimaPhp\Node\Expression\ArrowFunctionExpression', $this, $options->params, $options->defaults, $body, $body->type !== Syntax::BlockStatement);
 	}
 	private function parseAssignmentExpression()
 	{
@@ -1888,7 +1891,7 @@ class Parser {
 	private function parseForStatement(MutableNode $node)
 	{
 		$previousAllowIn = $this->state->allowIn;
-        $init = $test = $update = null;
+        $left = $init = $test = $update = null;
         $this->expectKeyword('for');
         $this->expect('(');
 

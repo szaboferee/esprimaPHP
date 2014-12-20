@@ -9,6 +9,7 @@
 namespace test;
 
 use EsprimaPhp\Parser;
+use EsprimaPhp\Util\Error;
 
 error_reporting(E_ALL);
 ini_set('display_errors', 'on');
@@ -50,12 +51,14 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 		$ret = array();
 
 		$fixtures = $this->getFixtures();
+		if($fixtures == null) {
+			$this->markTestSkipped();
+		}
 		foreach($fixtures as $code => $expectedTree) {
 			$ret[] = array($code, $expectedTree);
 		}
 
 		return $ret;
-		return array_slice($ret, 0, 1);
 	}
 
 	private function hasAttachedComment($syntax) {
@@ -126,7 +129,12 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 			echo "\nC: " . $code. "\n";
 			echo "\nE: " . $expectedTree. "\n";
 		}
-		$actualTree = $this->esprima->parse($code, $options);
+		try {
+			$actualTree = $this->esprima->parse($code, $options);
+		} catch (Error $e) {
+			$this->fail('Parsing failed:' . $e->getMessage());
+		}
+
 		$actualTree = ($options['comment'] || $options['tokens'] || $options['tolerant'])
 			? $actualTree
 			: (isset($actualTree->body[0]) ? $actualTree->body[0] : null);
@@ -137,4 +145,4 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expectedTree, $actualTree);
 
 	}
-} 
+}

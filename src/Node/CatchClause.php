@@ -13,6 +13,5 @@ class CatchClause extends Node
 	public function finish($esprima, $param, $body) {
 		$this->param = $param;
 		$this->body = $body;
-		$this->finishNode($esprima);
-
+		return $this->finishNode($esprima);
 	}}

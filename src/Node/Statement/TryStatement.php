@@ -15,13 +15,13 @@ class TryStatement extends Statement
 	 */
 	public $block;
 	/**
-	 * @var CatchClause| null
-	 */
-	public $handlers;
-	/**
 	 * @var CatchClause[]
 	 */
 	public $guardedHandlers;
+	/**
+	 * @var CatchClause| null
+	 */
+	public $handlers;
 	/**
 	 * @var BlockStatement|null
 	 */
