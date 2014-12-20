@@ -1,0 +1,22 @@
+{
+    "name": "szaboferee/esprima-php",
+    "description": "PHP port of esprima JS parser",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ferenc szabo",
+            "email": "szaboferee@gmail.com"
+        }
+    ],
+	"require": {
+	},
+	"require-dev": {
+		"phpunit/phpunit": "4.4.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"EsprimaPhp\\": "src/",
+			"test\\": "test/"
+		}
+	}
+}
