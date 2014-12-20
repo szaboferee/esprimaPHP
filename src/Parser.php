@@ -11,6 +11,7 @@ use EsprimaPhp\Node\Expression\BinaryExpression;
 use EsprimaPhp\Node\Expression\CallExpression;
 use EsprimaPhp\Node\Expression\ConditionalExpression;
 use EsprimaPhp\Node\Expression\FunctionExpression;
+use EsprimaPhp\Node\Expression\LogicalExpression;
 use EsprimaPhp\Node\Expression\MemberExpression;
 use EsprimaPhp\Node\Expression\NewExpression;
 use EsprimaPhp\Node\Expression\ObjectExpression;
@@ -1533,7 +1534,9 @@ class Parser {
 				$operator = $stack->pop()->value;
 				$left = $stack->pop();
 				$markers->pop();
-				$expr = (new BinaryExpression($this, $markers[count($markers) - 1]))->finish($this, $operator, $left, $right);
+				$expr = ($operator === '||' || $operator === '&&')
+					? (new LogicalExpression($this, $markers[count($markers) - 1]))->finish($this, $operator, $left, $right)
+					: (new BinaryExpression($this, $markers[count($markers) - 1]))->finish($this, $operator, $left, $right);
 				$stack->push($expr);
 			}
 
@@ -1551,7 +1554,9 @@ class Parser {
 		$expr = $stack[$i];
 		$markers->pop();
 		while ($i > 1) {
-			$expr = (new BinaryExpression($this, $markers->pop()))->finish($this, $stack[$i - 1]->value, $stack[$i - 2], $expr);
+			$expr = ($stack[$i - 1]->value === '||' || $stack[$i - 1]->value === '&&')
+				? (new LogicalExpression($this, $markers->pop()))->finish($this, $stack[$i - 1]->value, $stack[$i - 2], $expr)
+				: (new BinaryExpression($this, $markers->pop()))->finish($this, $stack[$i - 1]->value, $stack[$i - 2], $expr);
 			$i -= 2;
 		}
 
@@ -2314,7 +2319,7 @@ class Parser {
 	{
 		$firstRestricted = false;
 		$sourceElements = new ArrayList();
-
+		$node = new BlockStatement($this);
 		$this->expect('{');
 
 		while ($this->index < $this->length) {
@@ -2373,7 +2378,7 @@ class Parser {
 		$this->state->inFunctionBody = $oldInFunctionBody;
 		$this->state->parenthesizedCount = $oldParenthesisCount;
 
-		return new BlockStatement($this, $sourceElements);
+		return $node->finish($this, $sourceElements);
 	}
 	private function validateParam($options, $param, $name)
 	{
