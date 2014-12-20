@@ -2,97 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f18d2b0-7ef7-4587-a75b-a57aba21b049" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/ArrayExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/ArrayInitializerTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Util/ArrayList.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/ArrowFunctionExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/AssignmentExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Enum/AssignmentOperator.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/BaseTestCase.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/BinaryExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Enum/BinaryOperator.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/BlockStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/BreakStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/CallExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/CatchClause.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Comment.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/CommentsTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/ConditionalExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/ContinueStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/DebuggerStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Declaration.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/DoWhileStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/ES6UnicodeTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/EmptyStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Entry.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Util/Error.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/ExpressionStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Extra.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/ForInStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/ForOfStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/ForStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Declaration/FunctionDeclaration.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/FunctionExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/GroupingOperatorTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Util/Helper.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Identifier.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/IfStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/LabeledStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/LeftHandSideExpressionTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/LetStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/Literal.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/MemberExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/MultiplicativeOperatorsTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Util/MutableNode.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/NewExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Parser/Node.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/NumericLiteralsTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/ObjectExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/ObjectInitializerTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Parser.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Pattern.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/PlaceHolders.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Parser/Position.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/PostfixExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/PostfixExpressionsTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/PrimaryExpressionsTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Program.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Property.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/PropertyKind.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Regex.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/RegexLiteral.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/RegularExpressionLiteralsTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/ReturnStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/SequenceExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/SourceElement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Parser/SourceLocation.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/SourceString.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Parser/State.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/StringLiteralsTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/SwitchCase.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/SwitchStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Parser/Syntax.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/ThisExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/ThrowStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Parser/Token.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/TokenName.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/TryStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Expression/UnaryExpression.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Enum/UnaryOperator.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/UnaryOperatorsTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Enum/UpdateOperator.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Declaration/VariableDeclaration.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/VariableDeclarator.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/WhileStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Node/Statement/WithStatement.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/esprimaPHP.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/travis.yml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="esprimaPHP.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -118,15 +30,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Parser.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Parser.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="2025" column="66" selection-start="57623" selection-end="57623" vertical-scroll-proportion="-10.037037" vertical-offset="35243" max-vertical-offset="47358">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="BaseTestCase.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/BaseTestCase.php">
           <provider selected="true" editor-type-id="text-editor">
@@ -358,7 +261,16 @@
       <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="13" selection-start="22" selection-end="22" vertical-scroll-proportion="0.04054054" vertical-offset="0" max-vertical-offset="444">
+            <state line="2" column="5" selection-start="28" selection-end="28" vertical-scroll-proportion="0.08372093" vertical-offset="0" max-vertical-offset="430">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="travis.yml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/travis.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="7" column="8" selection-start="77" selection-end="77" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="234">
               <folding />
             </state>
           </provider>
@@ -406,7 +318,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/Node/Property.php" />
         <option value="$PROJECT_DIR$/src/Node/Expression/ObjectExpression.php" />
         <option value="$PROJECT_DIR$/src/Node/Expression/NewExpression.php" />
         <option value="$PROJECT_DIR$/src/Node/Expression/MemberExpression.php" />
@@ -456,6 +367,7 @@
         <option value="$PROJECT_DIR$/src/Parser.php" />
         <option value="$PROJECT_DIR$/result.txt" />
         <option value="$PROJECT_DIR$/test/BaseTestCase.php" />
+        <option value="$PROJECT_DIR$/travis.yml" />
         <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
@@ -656,7 +568,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893717" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34950072" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34950072" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952926" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3951498" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -665,7 +577,7 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44507846" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952926" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32952926" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952926" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -701,20 +613,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test/AdditiveOperatorsTest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="375">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/APITest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="375">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test/ArrayInitializerTest.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="1217" column="4" selection-start="31995" selection-end="31995" vertical-scroll-proportion="-18.925926" vertical-offset="21305" max-vertical-offset="22032">
@@ -1062,9 +960,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Parser.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2025" column="66" selection-start="57623" selection-end="57623" vertical-scroll-proportion="-10.037037" vertical-offset="35243" max-vertical-offset="47358">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="8" selection-start="77" selection-end="77" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="234">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="13" selection-start="22" selection-end="22" vertical-scroll-proportion="0.04054054" vertical-offset="0" max-vertical-offset="444">
+        <state line="2" column="5" selection-start="28" selection-end="28" vertical-scroll-proportion="0.08372093" vertical-offset="0" max-vertical-offset="430">
           <folding />
         </state>
       </provider>
