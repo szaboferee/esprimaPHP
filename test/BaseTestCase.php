@@ -36,9 +36,11 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 	 */
 	public function testFixture($code, $expectedTree) {
 
-		if (property_exists($expectedTree, 'lineNumber')) {
+        if ($code == '_empty_') $code = "";
+
+		if (is_object($expectedTree) && property_exists($expectedTree, 'lineNumber')) {
 			$this->_testError($code, $expectedTree);
-		} else if (property_exists($expectedTree, 'result')) {
+		} else if (is_object($expectedTree) && property_exists($expectedTree, 'result')) {
 			$this->_testAPI($code, $expectedTree);
 		} else if (is_array($expectedTree)) {
 			$this->_testTokenize($code, $expectedTree);

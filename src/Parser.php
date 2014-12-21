@@ -516,7 +516,7 @@ class Parser {
 		if ($ch !== '.') {
 			$number = $this->source[$this->index++];
 			//$ch = $this->source[$this->index];
-			$ch = array_key_exists($this->index, $this->source) ? $this->source[$this->index] : '';
+			$ch = $this->source->offsetExists($this->index) ? $this->source[$this->index] : '';
 
 			// Hex number starts with '0x'.
 			// Octal number starts with '0'.
@@ -539,15 +539,15 @@ class Parser {
 				$number .= $this->source[$this->index++];
 			}
 			//$ch = $this->source[$this->index];
-			$ch = array_key_exists($this->index, $this->source) ? $this->source[$this->index] : '';
+			$ch = $this->source->offsetExists($this->index) ? $this->source[$this->index] : '';
 		}
 
 		if ($ch == '.') {
 			$number .= $this->source[$this->index++];
 			while (Helper::isDecimalDigit($this->source->charCodeAt($this->index))) {
-				$number += $this->source[$this->index++];
+				$number .= $this->source[$this->index++];
 			}
-			$ch = $this->source[$this->index];
+			$ch = isset($this->source[$this->index]) ? $this->source[$this->index] : '';
 		}
 
 		if ($ch == 'e' || $ch == 'E') {
@@ -1448,8 +1448,8 @@ class Parser {
 	}
 	private function parsePostfixExpression()
 	{
-		$expr = $this->parseLeftHandSideExpressionAllowCall();
 		$startToken = $this->lookahead;
+		$expr = $this->parseLeftHandSideExpressionAllowCall();
 		if ($this->lookahead->type == Token::Punctuator) {
 			if (($this->match('++') || $this->match('--')) && !$this->peekLineTerminator()) {
 				// 11.3.1, 11.3.2
@@ -1992,7 +1992,7 @@ class Parser {
 			$label = $this->parseVariableIdentifier();
 
 			$key = '$' . $label->name;
-			if (!array_key_exists($key, $this->state->labelSet)) {
+			if (!$this->state->labelSet->offsetExists($key)) {
 				$this->throwError(null, Messages::UnknownLabel, $label->name);
             }
 		}
@@ -2032,7 +2032,7 @@ class Parser {
 			$label = $this->parseVariableIdentifier();
 
 			$key = '$' . $label->name;
-			if (!array_key_exists($key, $this->state->labelSet)) {
+			if (!$this->state->labelSet->offsetExists($key)) {
 				$this->throwError(null, Messages::UnknownLabel, $label->name);
             }
 		}
@@ -2388,7 +2388,7 @@ class Parser {
 				$options->stricted = $param;
 				$options->message = Messages::StrictParamName;
 			}
-			if (array_key_exists($key, $options->paramSet)) {
+			if ($options->paramSet->offsetExists($key)) {
 				$options->stricted = $param;
 				$options->message = Messages::StrictParamDupe;
 			}
@@ -2399,7 +2399,7 @@ class Parser {
 			} else if (Helper::isStrictModeReservedWord($name)) {
 				$options->firstRestricted = $param;
 				$options->message = Messages::StrictReservedWord;
-			} else if (array_key_exists($key, $options->paramSet)) {
+			} else if ($options->paramSet->offsetExists($key)) {
 				$options->firstRestricted = $param;
 				$options->message = Messages::StrictParamDupe;
 			}
@@ -2457,6 +2457,7 @@ class Parser {
 	}
 	private function parseFunctionDeclaration()
 	{
+        $node = new FunctionDeclaration($this);
 		$message = '';
 		$firstRestricted = null;
 		$this->expectKeyword('function');
@@ -2495,7 +2496,7 @@ class Parser {
 		}
 		$this->strict = $previousStrict;
 
-		return new FunctionDeclaration($this, $id, $params, $defaults, $body);
+		return  $node->finish($this, $id, $params, $defaults, $body);
 	}
 	private function parseFunctionExpression()
 	{

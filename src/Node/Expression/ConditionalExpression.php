@@ -19,15 +19,16 @@ class ConditionalExpression extends Expression
 	 */
 	public $test;
 
-	/**
+    /**
+     * @var Expression
+     */
+    public $consequent;
+
+    /**
 	 * @var Expression
 	 */
 	public $alternate;
 
-	/**
-	 * @var Expression
-	 */
-	public $consequent;
 
 	/**
 	 * @param EsprimaPHP $esprima

@@ -32,6 +32,9 @@ class Literal extends Expression
 	 */
 	public function finish($esprima, $token) {
 		$this->value = $token->value;
+        if(is_numeric($this->value)) {
+            $this->value = intval($this->value);
+        }
 		$this->raw = $esprima->source->slice($token->start, $token->end);
 		if ($token->regex) {
 			$this->regex = $token->regex;

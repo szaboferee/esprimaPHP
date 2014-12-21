@@ -16,7 +16,11 @@ class MemberExpression extends Node
 	 */
 	public $type = Syntax::MemberExpression;
 
-	/**
+    /**
+     * @var boolean
+     */
+    public $computed;
+    /**
 	 * @var Expression
 	 */
 	public $object;
@@ -26,10 +30,6 @@ class MemberExpression extends Node
 	 */
 	public $property;
 
-	/**
-	 * @var boolean
-	 */
-	public $computed;
 
 	/**
 	 * @param Parser $esprima

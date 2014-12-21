@@ -50,7 +50,7 @@ class Node implements JsonSerializable
 		} else {
 			if ($last && $last->trailingComments && $last->trailingComments[0]->range[0] >= $this->range[1]) {
 				$trailingComments = $last->trailingComments;
-				$last->trailingComments = new ArrayList();
+				unset($last->trailingComments);
 			}
 		}
 

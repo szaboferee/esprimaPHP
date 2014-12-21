@@ -13,6 +13,8 @@ class ArrowFunctionExpression extends Expression
 	 */
 	public $type = Syntax::ArrowFunctionExpression;
 
+    public $id = null;
+
 	/**
 	 * @var Pattern[]
 	 */

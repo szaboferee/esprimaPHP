@@ -17,10 +17,10 @@ class Helper {
 		return ($ch >= 0x30 && $ch <= 0x39);   // 0..9
 	}
 	public static function isHexDigit($ch) {
-		return strpos('0123456789abcdefABCDEF', $ch) !== false;
+		return strpos('0123456789abcdefABCDEF', (string)$ch) !== false;
 	}
 	public static function isOctalDigit($ch) {
-		return strlen($ch) && strpos('01234567', $ch) !== false;
+		return strlen($ch) && strpos('01234567', (string)$ch) !== false;
 	}
 	public static function isIdentifierStart($ch) {
 		return ($ch === 0x24) || ($ch === 0x5F) ||  // $ (dollar) and _ (underscore)

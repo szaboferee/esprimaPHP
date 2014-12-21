@@ -29,16 +29,16 @@ class FunctionDeclaration extends Declaration
 	public $defaults;
 
 	/**
-	 * @var Identifier|null
-	 */
-	public $rest;
-
-	/**
 	 * @var BlockStatement|Expression
 	 */
 	public $body;
 
-	/**
+    /**
+     * @var Identifier|null
+     */
+    public $rest;
+
+    /**
 	 * @var boolean;
 	 */
 	public $generator;
