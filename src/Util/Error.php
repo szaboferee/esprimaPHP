@@ -14,7 +14,12 @@ class Error extends \Exception
 	function __construct($message){
 		$this->message = $message;
 	}
-
-
-
-} 
+    public function __toString() {
+        return sprintf('{%d:[%d:%d]} - %s' ,
+            $this->index,
+            $this->lineNumber,
+            $this->column,
+            $this->message
+        );
+    }
+}

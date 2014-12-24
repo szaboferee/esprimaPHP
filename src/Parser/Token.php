@@ -23,7 +23,6 @@ class Token {
 	 * @var Regex
 	 */
 	protected $regex;
-	protected $octale;
 	protected $startLineNumber;
 	protected $startLineStart;
 	protected $prec;
@@ -31,8 +30,6 @@ class Token {
 
 	public $type;
 	public $value;
-	//public $range;
-	//public $loc;
 
 	public static function name($token)
 	{

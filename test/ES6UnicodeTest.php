@@ -5,7 +5,8 @@ class ES6UnicodeTest extends BaseTestCase
 {
 	protected function getFixtures()
 {
-    return [];
+
+    return array();
 	return json_decode('
 	{
 	"\"\\\\u{714E}\\\\u{8336}\"":{"type":"ExpressionStatement","expression":{"type":"Literal","value":"煎茶","raw":"\"\\\\u{714E}\\\\u{8336}\"","range":[0,18],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":18}}},"range":[0,18],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":18}}},

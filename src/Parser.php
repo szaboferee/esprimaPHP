@@ -262,7 +262,7 @@ class Parser {
 			$code = $code * 16 + strpos('0123456789abcdef', strtolower($ch));
 		}
 
-		if ($code > 0x10FFFF || $ch !== '}') {
+		if ($code > 0x10FFFF || $ch != '}') {
 			$this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
 		}
 
@@ -281,7 +281,7 @@ class Parser {
 
 		// '\u' (U+005C, U+0075) denotes an escaped character.
 		if ($ch == 0x5C) {
-			if ($this->source->charCodeAt($this->index) !== 0x75) {
+			if ($this->source->charCodeAt($this->index) != 0x75) {
 				$this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
 			}
 			++$this->index;
@@ -303,7 +303,7 @@ class Parser {
 			// '\u' (U+005C, U+0075) denotes an escaped character.
 			if ($ch == 0x5C) {
 				$id = substr($id, 0, strlen($id) - 1);
-				if ($this->source->charCodeAt($this->index) !== 0x75) {
+				if ($this->source->charCodeAt($this->index) != 0x75) {
 					$this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
 				}
 				++$this->index;
@@ -486,7 +486,7 @@ class Parser {
 			$this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
 		}
 
-		return new Token(Token::NumericLiteral, intval('0x'.$number), $this->lineNumber, $this->lineStart, $start, $this->index);
+		return new Token(Token::NumericLiteral, hexdec('0x'.$number) , $this->lineNumber, $this->lineStart, $start, $this->index);
 	}
 	private function scanOctalLiteral($start)
 	{
@@ -503,17 +503,21 @@ class Parser {
 			$this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
 		}
 
-		return new Token(Token::NumericLiteral, decoct($number), $this->lineNumber, $this->lineStart, $start, $this->index);
+		$token = new Token(Token::NumericLiteral, octdec($number), $this->lineNumber, $this->lineStart, $start, $this->index);
+
+        $token->octal = true;
+
+        return $token;
 	}
 	private function scanNumericLiteral()
 	{
 		$ch = $this->source[$this->index];
 		assert(Helper::isDecimalDigit($ch->charCodeAt(0)) || ($ch == '.'),
-			'Numeric literal must start with a decimal digit or a decimal point');
+			'Numeric literal must start with a decimal digit or a decimal point value:'. $this->index . ' -- '. $ch . " : ". $ch->charCodeAt(0));
 
 		$start = $this->index;
 		$number = '';
-		if ($ch !== '.') {
+		if ($ch != '.') {
 			$number = $this->source[$this->index++];
 			//$ch = $this->source[$this->index];
 			$ch = $this->source->offsetExists($this->index) ? $this->source[$this->index] : '';
@@ -1052,7 +1056,7 @@ class Parser {
 	private function expect($value)
 	{
 		$token = $this->lex();
-		if ($token->type !== Token::Punctuator || $token->value !== $value) {
+		if ($token->type !== Token::Punctuator || $token->value != $value) {
 			$this->throwUnexpected($token);
 		}
 	}
@@ -1060,7 +1064,7 @@ class Parser {
 	{
 		if ($this->extra->errors) {
 			$token = $this->lookahead;
-			if ($token->type !== Token::Punctuator && $token->value !== $value) {
+			if ($token->type !== Token::Punctuator && $token->value != $value) {
 				$this->throwErrorTolerant($token, Messages::UnexpectedToken, $token->value);
 			} else {
 				$this->lex();
@@ -1072,7 +1076,7 @@ class Parser {
 	private function expectKeyword($keyword)
 	{
 		$token = $this->lex();
-		if ($token->type !== Token::Keyword || $token->value !== $keyword) {
+		if ($token->type !== Token::Keyword || $token->value != $keyword) {
 			$this->throwUnexpected($token);
 		}
 	}
@@ -2639,7 +2643,7 @@ class Parser {
 	{
 		$this->source = new SourceString($source);
 		$this->index = 0;
-		$this->length = strlen($source);
+		$this->length = $this->source->length();
 		$this->lineNumber = $this->length > 0 ? 1 : 0;
 
 		if ($options !== null) {

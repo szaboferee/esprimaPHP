@@ -18,7 +18,10 @@ class Node implements JsonSerializable
 	 */
 	public $loc;
 
-	function __construct($esprima, $startToken = null)
+    public $leadingComments;
+    public $trailingComments;
+
+    function __construct($esprima, $startToken = null)
 	{
 		if($startToken) {
 			$this->wrappingNode($esprima, $startToken);
@@ -65,7 +68,7 @@ class Node implements JsonSerializable
 		if ($lastChild) {
 			if ($lastChild->leadingComments && $lastChild->leadingComments[count($lastChild->leadingComments) - 1]->range[1] <= $this->range[0]) {
 				$this->leadingComments = $lastChild->leadingComments;
-				$lastChild->leadingComments = null;
+				unset($lastChild->leadingComments);
 			}
 		} else if (count($esprima->extra->leadingComments) > 0 && $esprima->extra->leadingComments[count($esprima->extra->leadingComments) - 1]->range[1] <= $this->range[0]) {
 			$this->leadingComments = $esprima->extra->leadingComments;
@@ -153,7 +156,7 @@ class Node implements JsonSerializable
 
 		$ret = array();
 		foreach($object as $key => $value) {
-			if($value !== null || !property_exists('Node', $key)) {
+			if($value !== null || !property_exists('\EsprimaPhp\Parser\Node', $key)) {
 				$ret[$key] = $value;
 			}
 		}

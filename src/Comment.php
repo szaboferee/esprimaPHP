@@ -1,14 +1,12 @@
 <?php
 namespace EsprimaPhp;
 
-class Comment {
-	public $value;
+use EsprimaPhp\Parser\Node;
+
+class Comment extends Node{
 	public $type;
-	public $range;
-	/**
-	 * @var SourceLocation
-	 */
-	public $loc;
+	public $value;
+
 	function __construct($type, $value)	{
 		$this->type = $type;
 		$this->value = $value;

@@ -8,7 +8,9 @@
 
 namespace EsprimaPhp;
 
-class RegexLiteral {
+use EsprimaPhp\Node\Expression\Literal;
+
+class RegexLiteral extends Literal{
 	public $literal;
 
 	public $value;

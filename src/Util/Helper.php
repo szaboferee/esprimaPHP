@@ -7,8 +7,31 @@ use EsprimaPhp\Regex;
 
 class Helper {
 	public static function isWhiteSpace($ch) {
-		return ($ch === 0x20) || ($ch === 0x09) || ($ch === 0x0B) || ($ch === 0x0C) || ($ch === 0xA0)
-		|| ($ch >= 0x1680 && in_array($ch, [0x1680, 0x180E, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008, 0x2009, 0x200A, 0x202F, 0x205F, 0x3000, 0xFEFF]));
+        $whitespaces = [
+            0x20,
+            0x09,
+            0x0B,
+            0x0C,
+            0xA0,
+            0x1680,
+            0x180E,
+            0x2000,
+            0x2001,
+            0x2002,
+            0x2003,
+            0x2004,
+            0x2005,
+            0x2006,
+            0x2007,
+            0x2008,
+            0x2009,
+            0x200A,
+            0x202F,
+            0x205F,
+            0x3000,
+            0xFEFF
+        ];
+        return in_array($ch, $whitespaces);
 	}
 	public static function isLineTerminator($ch) {
 		return ($ch === 0x0A) || ($ch === 0x0D) || ($ch === 0x2028) || ($ch === 0x2029);

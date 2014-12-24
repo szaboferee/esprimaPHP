@@ -53,23 +53,23 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 		$ret = array();
 
 		$fixtures = $this->getFixtures();
-		if($fixtures == null) {
-			$this->markTestSkipped();
+		if($fixtures == null || !count($fixtures)) {
+			$fixtures = array("", null);;
 		}
 		foreach($fixtures as $code => $expectedTree) {
-			$ret[] = array($code, $expectedTree);
+			$ret[$code] = array($code, $expectedTree);
 		}
 
 		return $ret;
 	}
 
-	private function hasAttachedComment($syntax) {
-
-	foreach (get_object_vars($syntax) as $key => $value) {
+	private function hasAttachedComment($syntax)
+    {
+	    foreach ((is_array($syntax) ? $syntax: get_object_vars($syntax)) as $key => $value) {
 		if ($key === 'leadingComments' || $key === 'trailingComments') {
 			return true;
 		}
-		if (is_object($value) && count($value)) {
+		if (is_object($value) || is_array($value)) {
 			if ($this->hasAttachedComment($value)) {
 				return true;
 			}
@@ -96,11 +96,14 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 	private function _testParse($code, $expectedTree)
 	{
 		$pretty = JSON_PRETTY_PRINT;
-		$pretty = 0;
 		$debug = 0;
 
+        if(!is_object($expectedTree)) {
+            $this->markTestIncomplete("invalid json");
+        }
+
 		$options = [
-			'comment' => property_exists($expectedTree, 'comment'),
+			'comment' => property_exists($expectedTree, 'comments'),
 			'range' => true,
 			'loc' => true,
 			'tokens' => property_exists($expectedTree, 'tokens'),
@@ -123,26 +126,26 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 			$options['source'] = isset($expectedTree->loc->source) ? $expectedTree->loc->source : null;
 		}
 
-		$expectedTree = json_encode($expectedTree, $pretty);
-
-
 		if($debug) {
+
 			echo "\nO: " . json_encode($options). "\n";
 			echo "\nC: " . $code. "\n";
-			echo "\nE: " . $expectedTree. "\n";
+			echo "\nE: " . json_encode($expectedTree). "\n";
 		}
 		try {
 			$actualTree = $this->esprima->parse($code, $options);
 		} catch (Error $e) {
-			$this->fail('Parsing failed:' . $e->getMessage());
+			$this->fail('Parsing failed:' . $e);
 		}
 
 		$actualTree = ($options['comment'] || $options['tokens'] || $options['tolerant'])
 			? $actualTree
 			: (isset($actualTree->body[0]) ? $actualTree->body[0] : null);
-		$actualTree = json_encode($actualTree, $pretty);
 
+        $actualTree = json_encode($actualTree);
 		if($debug) echo "\nA: " . $actualTree. "\n";
+        $actualTree = json_decode($actualTree);
+
 
 		$this->assertEquals($expectedTree, $actualTree);
 
