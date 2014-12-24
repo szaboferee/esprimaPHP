@@ -9,7 +9,7 @@ class UnaryExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::UnaryExpression;
+	public $type = Syntax::UNARY_EXPRESSION;
 
 	/**
 	 * @var UnaryOperator

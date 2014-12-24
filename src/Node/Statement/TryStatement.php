@@ -9,7 +9,7 @@ class TryStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::TryStatement;
+	public $type = Syntax::TRY_STATEMENT;
 	/**
 	 * @var BlockStatement
 	 */

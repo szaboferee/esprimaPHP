@@ -12,7 +12,7 @@ class ArrayExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ArrayExpression;
+	public $type = Syntax::ARRAY_EXPRESSION;
 
 	/**
 	 * @var Expression[]|null[]

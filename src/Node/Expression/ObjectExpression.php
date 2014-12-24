@@ -13,7 +13,7 @@ class ObjectExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ObjectExpression;
+	public $type = Syntax::OBJECT_EXPRESSION;
 
 	/**
 	 * @var Property[]

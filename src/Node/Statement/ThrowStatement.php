@@ -9,7 +9,7 @@ class ThrowStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ThrowStatement;
+	public $type = Syntax::THROW_STATEMENT;
 	/**
 	 * @var Expression
 	 */

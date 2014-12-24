@@ -13,7 +13,7 @@ class NewExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::NewExpression;
+	public $type = Syntax::NEW_EXPRESSION;
 
 	/**
 	 * @var Expression

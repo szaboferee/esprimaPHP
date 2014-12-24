@@ -10,7 +10,7 @@ class WithStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::WithStatement;
+	public $type = Syntax::WITH_STATEMENT;
 	/**
 	 * @var Expression
 	 */

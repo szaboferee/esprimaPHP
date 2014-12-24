@@ -5,15 +5,15 @@ use EsprimaPhp\TokenName;
 use InvalidArgumentException;
 
 class Token {
-	const BooleanLiteral = 1;
+	const BOOLEAN_LITERAL = 1;
 	const EOF = 2;
-	const Identifier = 3;
-	const Keyword = 4;
-	const NullLiteral = 5;
-	const NumericLiteral = 6;
-	const Punctuator = 7;
-	const StringLiteral = 8;
-	const RegularExpression = 9;
+	const IDENTIFIER = 3;
+	const KEYWORD = 4;
+	const NULL_LITERAL = 5;
+	const NUMERIC_LITERAL = 6;
+	const PUNCTUATOR = 7;
+	const STRING_LITERAL = 8;
+	const REGULAR_EXPRESSION = 9;
 
 	protected $lineNumber;
 	protected $lineStart;
@@ -34,15 +34,15 @@ class Token {
 	public static function name($token)
 	{
 		switch($token) {
-			case self::BooleanLiteral: return TokenName::BooleanLiteral;
+			case self::BOOLEAN_LITERAL: return TokenName::BOOLEAN_LITERAL;
 			case self::EOF: return TokenName::EOF;
-			case self::Identifier: return TokenName::Identifier;
-			case self::Keyword: return TokenName::Keyword;
-			case self::NullLiteral: return TokenName::NullLiteral;
-			case self::NumericLiteral: return TokenName::NumericLiteral;
-			case self::Punctuator: return TokenName::Punctuator;
-			case self::StringLiteral: return TokenName::StringLiteral;
-			case self::RegularExpression: return TokenName::RegularExpression;
+			case self::IDENTIFIER: return TokenName::IDENTIFIER;
+			case self::KEYWORD: return TokenName::KEYWORD;
+			case self::NULL_LITERAL: return TokenName::NULL_LITERAL;
+			case self::NUMERIC_LITERAL: return TokenName::NUMERIC_LITERAL;
+			case self::PUNCTUATOR: return TokenName::PUNCTUATOR;
+			case self::STRING_LITERAL: return TokenName::STRING_LITERAL;
+			case self::REGULAR_EXPRESSION: return TokenName::REGULAR_EXPRESSION;
 			default: throw new InvalidArgumentException("Invalid token: {" . $token . "}");
 		}
 	}

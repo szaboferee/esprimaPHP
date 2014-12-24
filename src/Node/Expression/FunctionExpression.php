@@ -15,7 +15,7 @@ class FunctionExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::FunctionExpression;
+	public $type = Syntax::FUNCTION_EXPRESSION;
 
 	/**
 	 * @var Identifier|null

@@ -10,7 +10,7 @@ class VariableDeclarator extends Node
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::VariableDeclarator;
+	public $type = Syntax::VARIABLE_DECLARATOR;
 	/**
 	 * @var Pattern
 	 */

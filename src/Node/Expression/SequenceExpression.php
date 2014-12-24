@@ -9,7 +9,7 @@ class SequenceExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::SequenceExpression;
+	public $type = Syntax::SEQUENCE_EXPRESSION;
 	/**
 	 * @var Expression[]
 	 */

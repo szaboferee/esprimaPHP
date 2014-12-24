@@ -9,7 +9,7 @@ class LabeledStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::LabeledStatement;
+	public $type = Syntax::LABELED_STATEMENT;
 	/**
 	 * @var Identifier
 	 */

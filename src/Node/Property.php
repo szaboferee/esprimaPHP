@@ -12,7 +12,7 @@ class Property extends Node
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::Property;
+	public $type = Syntax::PROPERTY;
 
 	/**
 	 * @var Literal|Identifier

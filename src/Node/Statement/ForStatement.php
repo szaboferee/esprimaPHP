@@ -9,7 +9,7 @@ class ForStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ForStatement;
+	public $type = Syntax::FOR_STATEMENT;
 	/**
 	 * @var VariableDeclaration | Expression | null
 	 */

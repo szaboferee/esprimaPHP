@@ -344,15 +344,15 @@ class Parser {
 		// There is no keyword or literal with only one character.
 		// Thus, it must be an identifier.
 		if (strlen($id) == 1) {
-			$type = Token::Identifier;
+			$type = Token::IDENTIFIER;
 		} else if (Helper::isKeyword($id, $this->strict)) {
-			$type = Token::Keyword;
+			$type = Token::KEYWORD;
 		} else if ($id == 'null') {
-			$type = Token::NullLiteral;
+			$type = Token::NULL_LITERAL;
 		} else if ($id == 'true' || $id == 'false') {
-			$type = Token::BooleanLiteral;
+			$type = Token::BOOLEAN_LITERAL;
 		} else {
-			$type = Token::Identifier;
+			$type = Token::IDENTIFIER;
 		}
 
 		return new Token($type, $id, $this->lineNumber, $this->lineStart, $start, $this->index);
@@ -386,7 +386,7 @@ class Parser {
 					}
 				}
 				return new Token(
-					Token::Punctuator, chr($code), $this->lineNumber, $this->lineStart, $start, $this->index
+					Token::PUNCTUATOR, chr($code), $this->lineNumber, $this->lineStart, $start, $this->index
 				);
 
 			default:
@@ -407,7 +407,7 @@ class Parser {
 						case 0x2A:  // *
 							$this->index += 2;
 							return new Token(
-								Token::Punctuator, chr($code) . chr($code2), $this->lineNumber, $this->lineStart, $start, $this->index
+								Token::PUNCTUATOR, chr($code) . chr($code2), $this->lineNumber, $this->lineStart, $start, $this->index
 							);
 
 						case 0x21: // !
@@ -419,7 +419,7 @@ class Parser {
 								++$this->index;
 							}
 							return new Token(
-								Token::Punctuator, $this->source->slice($start, $this->index), $this->lineNumber, $this->lineStart, $start, $this->index
+								Token::PUNCTUATOR, $this->source->slice($start, $this->index), $this->lineNumber, $this->lineStart, $start, $this->index
 							);
 					}
 				}
@@ -431,7 +431,7 @@ class Parser {
 		if ($ch4 == '>>>=') {
 			$this->index += 4;
 			return new Token(
-				Token::Punctuator, $ch4, $this->lineNumber, $this->lineStart, $start, $this->index
+				Token::PUNCTUATOR, $ch4, $this->lineNumber, $this->lineStart, $start, $this->index
 			);
 		}
 
@@ -442,7 +442,7 @@ class Parser {
 		if ($ch3 == '>>>' || $ch3 == '<<=' || $ch3 == '>>=') {
 			$this->index += 3;
 			return new Token(
-				Token::Punctuator, $ch3, $this->lineNumber, $this->lineStart, $start, $this->index
+				Token::PUNCTUATOR, $ch3, $this->lineNumber, $this->lineStart, $start, $this->index
 			);
 		}
 
@@ -452,7 +452,7 @@ class Parser {
 		if (($ch1 == $ch2[1] && (strpos('+-<>&|', (string)$ch1) !== false)) || $ch2 == '=>') {
 			$this->index += 2;
 			return new Token(
-				Token::Punctuator, $ch2, $this->lineNumber, $this->lineStart, $start, $this->index
+				Token::PUNCTUATOR, $ch2, $this->lineNumber, $this->lineStart, $start, $this->index
 			);
 		}
 
@@ -461,7 +461,7 @@ class Parser {
 		if (strpos('<>=!+-*%&|^/', (string)$ch1) !== false) {
 			++$this->index;
 			return new Token(
-				Token::Punctuator, $ch1, $this->lineNumber, $this->lineStart, $start, $this->index
+				Token::PUNCTUATOR, $ch1, $this->lineNumber, $this->lineStart, $start, $this->index
 			);
 		}
 
@@ -486,7 +486,7 @@ class Parser {
 			$this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
 		}
 
-		return new Token(Token::NumericLiteral, hexdec('0x'.$number) , $this->lineNumber, $this->lineStart, $start, $this->index);
+		return new Token(Token::NUMERIC_LITERAL, hexdec('0x'.$number) , $this->lineNumber, $this->lineStart, $start, $this->index);
 	}
 	private function scanOctalLiteral($start)
 	{
@@ -503,7 +503,7 @@ class Parser {
 			$this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
 		}
 
-		$token = new Token(Token::NumericLiteral, octdec($number), $this->lineNumber, $this->lineStart, $start, $this->index);
+		$token = new Token(Token::NUMERIC_LITERAL, octdec($number), $this->lineNumber, $this->lineStart, $start, $this->index);
 
         $token->octal = true;
 
@@ -574,7 +574,7 @@ class Parser {
 			$this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
 		}
 
-		return new Token(Token::NumericLiteral, floatval((string)$number), $this->lineNumber, $this->lineStart, $start, $this->index);
+		return new Token(Token::NUMERIC_LITERAL, floatval((string)$number), $this->lineNumber, $this->lineStart, $start, $this->index);
 	}
 	private function scanStringLiteral()
 	{
@@ -680,7 +680,7 @@ class Parser {
 			$this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
 		}
 
-		$token =  new Token(Token::StringLiteral, $str, $this->lineNumber, $this->lineStart, $start, $this->index);
+		$token =  new Token(Token::STRING_LITERAL, $str, $this->lineNumber, $this->lineStart, $start, $this->index);
 		$token->octale = $octal;
 		$token->startLineNumber = $startLineNumber;
 		$token->startLineStart = $startLineStart;
@@ -785,7 +785,7 @@ class Parser {
 		$value = $this->testRegExp($body->value, $flags->value);
 
 		if ($this->extra->tokenize) {
-			$token = new Token(Token::RegularExpression, $value, $this->lineNumber, $this->lineStart, $start, $this->index);
+			$token = new Token(Token::REGULAR_EXPRESSION, $value, $this->lineNumber, $this->lineStart, $start, $this->index);
 			$token->regex = new Regex($body->value, $flags->value);
 			return $token;
 		}
@@ -1028,19 +1028,19 @@ class Parser {
 			$this->throwError($token, Messages::UnexpectedEOS);
 		}
 
-		if ($token->type == Token::NumericLiteral) {
+		if ($token->type == Token::NUMERIC_LITERAL) {
 			$this->throwError($token, Messages::UnexpectedNumber);
 		}
 
-		if ($token->type == Token::StringLiteral) {
+		if ($token->type == Token::STRING_LITERAL) {
 			$this->throwError($token, Messages::UnexpectedString);
 		}
 
-		if ($token->type == Token::Identifier) {
+		if ($token->type == Token::IDENTIFIER) {
 			$this->throwError($token, Messages::UnexpectedIdentifier);
 		}
 
-		if ($token->type == Token::Keyword) {
+		if ($token->type == Token::KEYWORD) {
 			if (Helper::isFutureReservedWord($token->value)) {
 				$this->throwError($token, Messages::UnexpectedReserved);
 			} else if ($this->strict && Helper::isStrictModeReservedWord($token->value)) {
@@ -1056,7 +1056,7 @@ class Parser {
 	private function expect($value)
 	{
 		$token = $this->lex();
-		if ($token->type !== Token::Punctuator || $token->value != $value) {
+		if ($token->type !== Token::PUNCTUATOR || $token->value != $value) {
 			$this->throwUnexpected($token);
 		}
 	}
@@ -1064,7 +1064,7 @@ class Parser {
 	{
 		if ($this->extra->errors) {
 			$token = $this->lookahead;
-			if ($token->type !== Token::Punctuator && $token->value != $value) {
+			if ($token->type !== Token::PUNCTUATOR && $token->value != $value) {
 				$this->throwErrorTolerant($token, Messages::UnexpectedToken, $token->value);
 			} else {
 				$this->lex();
@@ -1076,20 +1076,20 @@ class Parser {
 	private function expectKeyword($keyword)
 	{
 		$token = $this->lex();
-		if ($token->type !== Token::Keyword || $token->value != $keyword) {
+		if ($token->type !== Token::KEYWORD || $token->value != $keyword) {
 			$this->throwUnexpected($token);
 		}
 	}
 	private function match($value)
 	{
-		return $this->lookahead->type == Token::Punctuator && $this->lookahead->value == $value;
+		return $this->lookahead->type == Token::PUNCTUATOR && $this->lookahead->value == $value;
 	}
 	public function matchKeyword($keyword) {
-		return $this->lookahead->type == Token::Keyword && $this->lookahead->value == $keyword;
+		return $this->lookahead->type == Token::KEYWORD && $this->lookahead->value == $keyword;
 	}
 	private function matchAssign()
 	{
-		if ($this->lookahead->type !== Token::Punctuator) {
+		if ($this->lookahead->type !== Token::PUNCTUATOR) {
 			return false;
 		}
 		$op = $this->lookahead->value;
@@ -1169,7 +1169,7 @@ class Parser {
 		// Note: This function is called only from parseObjectProperty(), where
 		// EOF and Punctuator tokens are already filtered out.
 
-		if ($token->type == Token::StringLiteral || $token->type == Token::NumericLiteral) {
+		if ($token->type == Token::STRING_LITERAL || $token->type == Token::NUMERIC_LITERAL) {
 			if ($this->strict && $token->octal) {
 				$this->throwErrorTolerant($token, Messages::StrictOctalLiteral);
 			}
@@ -1184,7 +1184,7 @@ class Parser {
 		$node = new Property($this);
 		$token = $this->lookahead;
 
-		if ($token->type == Token::Identifier) {
+		if ($token->type == Token::IDENTIFIER) {
 
 			$id = $this->parseObjectPropertyKey();
 
@@ -1201,7 +1201,7 @@ class Parser {
 				$key = $this->parseObjectPropertyKey();
 				$this->expect('(');
 				$token = $this->lookahead;
-				if ($token->type !== Token::Identifier) {
+				if ($token->type !== Token::IDENTIFIER) {
 					$this->expect(')');
 					$this->throwErrorTolerant($token, Messages::UnexpectedToken, $token->value);
 					$value = $this->parsePropertyFunction(new ArrayList());
@@ -1216,7 +1216,7 @@ class Parser {
 			$value = $this->parseAssignmentExpression();
 			return $node->finish($this, 'init', $id, $value);
 		}
-		if ($token->type == Token::EOF || $token->type == Token::Punctuator) {
+		if ($token->type == Token::EOF || $token->type == Token::PUNCTUATOR) {
 			$this->throwUnexpected($token);
 		} else {
 			$key = $this->parseObjectPropertyKey();
@@ -1236,7 +1236,7 @@ class Parser {
 		while (!$this->match('}')) {
 			$property = $this->parseObjectProperty();
 
-			if ($property->key->type == Syntax::Identifier) {
+			if ($property->key->type == Syntax::IDENTIFIER) {
 				$name = $property->key->name;
 			} else {
 				$name = (string) $property->key->value;
@@ -1309,14 +1309,14 @@ class Parser {
 
 		$type = $this->lookahead->type;
 
-		if ($type == Token::Identifier) {
+		if ($type == Token::IDENTIFIER) {
 			$expr = $node->finish('\EsprimaPhp\Node\Identifier', $this, $this->lex()->value);
-		} else if ($type == Token::StringLiteral || $type == Token::NumericLiteral) {
+		} else if ($type == Token::STRING_LITERAL || $type == Token::NUMERIC_LITERAL) {
 			if ($this->strict && $this->lookahead->octal) {
 				$this->throwErrorTolerant($this->lookahead, Messages::StrictOctalLiteral);
 			}
 			$expr = $node->finish('\EsprimaPhp\Node\Expression\Literal', $this, $this->lex());
-		} else if ($type == Token::Keyword) {
+		} else if ($type == Token::KEYWORD) {
 			if ($this->matchKeyword('function')) {
 				return $this->parseFunctionExpression();
 			}
@@ -1326,11 +1326,11 @@ class Parser {
 			} else {
 				$this->throwUnexpected($this->lex());
 			}
-		} else if ($type == Token::BooleanLiteral) {
+		} else if ($type == Token::BOOLEAN_LITERAL) {
 			$token = $this->lex();
 			$token->value = ($token->value == 'true');
 			$expr = $node->finish('\EsprimaPhp\Node\Expression\Literal', $this, $token);
-		} else if ($type == Token::NullLiteral) {
+		} else if ($type == Token::NULL_LITERAL) {
 			$token = $this->lex();
 			$token->value = null;
 			$expr = $node->finish('\EsprimaPhp\Node\Expression\Literal', $this, $token);
@@ -1454,10 +1454,10 @@ class Parser {
 	{
 		$startToken = $this->lookahead;
 		$expr = $this->parseLeftHandSideExpressionAllowCall();
-		if ($this->lookahead->type == Token::Punctuator) {
+		if ($this->lookahead->type == Token::PUNCTUATOR) {
 			if (($this->match('++') || $this->match('--')) && !$this->peekLineTerminator()) {
 				// 11.3.1, 11.3.2
-				if ($this->strict && $expr->type == Syntax::Identifier && Helper::isRestrictedWord($expr->name)) {
+				if ($this->strict && $expr->type == Syntax::IDENTIFIER && Helper::isRestrictedWord($expr->name)) {
 					$this->throwErrorTolerant(null, Messages::StrictLHSPostfix);
 				}
 
@@ -1474,14 +1474,14 @@ class Parser {
 	}
 	private function parseUnaryExpression()
 	{
-		if ($this->lookahead->type !== Token::Punctuator && $this->lookahead->type !== Token::Keyword) {
+		if ($this->lookahead->type !== Token::PUNCTUATOR && $this->lookahead->type !== Token::KEYWORD) {
 			$expr = $this->parsePostfixExpression();
 		} else if ($this->match('++') || $this->match('--')) {
 			$startToken = $this->lookahead;
 			$token = $this->lex();
 			$expr = $this->parseUnaryExpression();
 			// 11.4.4, 11.4.5
-			if ($this->strict && $expr->type == Syntax::Identifier && Helper::isRestrictedWord($expr->name)) {
+			if ($this->strict && $expr->type == Syntax::IDENTIFIER && Helper::isRestrictedWord($expr->name)) {
 				$this->throwErrorTolerant(null, Messages::StrictLHSPrefix);
 			}
 
@@ -1500,7 +1500,7 @@ class Parser {
 			$token = $this->lex();
 			$expr = $this->parseUnaryExpression();
 			$expr = (new UnaryExpression($this, $startToken))->finish($this, $token->value, $expr);
-			if ($this->strict && $expr->operator == 'delete' && $expr->argument->type == Syntax::Identifier) {
+			if ($this->strict && $expr->operator == 'delete' && $expr->argument->type == Syntax::IDENTIFIER) {
 				$this->throwErrorTolerant(null, Messages::StrictDelete);
 			}
 		} else {
@@ -1609,11 +1609,11 @@ class Parser {
 
 		for ($i = 0, $len = count($expressions); $i < $len; $i += 1) {
 			$param = $expressions[$i];
-			if ($param->type == Syntax::Identifier) {
+			if ($param->type == Syntax::IDENTIFIER) {
 				$params->push($param);
 				$defaults->push(null);
 				$this->validateParam($options, $param, $param->name);
-			} else if ($param->type == Syntax::AssignmentExpression) {
+			} else if ($param->type == Syntax::ASSIGNMENT_EXPRESSION) {
 				$params->push($param->left);
 				$defaults->push($param->right);
 				++$defaultCount;
@@ -1661,7 +1661,7 @@ class Parser {
 
 		$this->strict = $previousStrict;
 
-		return  $node->finish('\EsprimaPhp\Node\Expression\ArrowFunctionExpression', $this, $options->params, $options->defaults, $body, $body->type !== Syntax::BlockStatement);
+		return  $node->finish('\EsprimaPhp\Node\Expression\ArrowFunctionExpression', $this, $options->params, $options->defaults, $body, $body->type !== Syntax::BLOCK_STATEMENT);
 	}
 	private function parseAssignmentExpression()
 	{
@@ -1674,11 +1674,11 @@ class Parser {
 		if ($expr == PlaceHolders::ArrowParameterPlaceHolder() || $this->match('=>')) {
 			if ($this->state->parenthesisCount == $oldParenthesisCount ||
 				$this->state->parenthesisCount == ($oldParenthesisCount + 1)) {
-				if ($expr->type == Syntax::Identifier) {
+				if ($expr->type == Syntax::IDENTIFIER) {
 					$list = $this->reinterpretAsCoverFormalsList([ $expr ]);
-				} else if ($expr->type == Syntax::AssignmentExpression) {
+				} else if ($expr->type == Syntax::ASSIGNMENT_EXPRESSION) {
 					$list = $this->reinterpretAsCoverFormalsList([ $expr ]);
-				} else if ($expr->type == Syntax::SequenceExpression) {
+				} else if ($expr->type == Syntax::SEQUENCE_EXPRESSION) {
 					$list = $this->reinterpretAsCoverFormalsList($expr->expressions);
 				} else if ($expr == PlaceHolders::ArrowParameterPlaceHolder()) {
 					$list = $this->reinterpretAsCoverFormalsList(new ArrayList());
@@ -1696,7 +1696,7 @@ class Parser {
 			}
 
 			// 11.13.1
-			if ($this->strict && $expr->type == Syntax::Identifier && Helper::isRestrictedWord($expr->name)) {
+			if ($this->strict && $expr->type == Syntax::IDENTIFIER && Helper::isRestrictedWord($expr->name)) {
 				$this->throwErrorTolerant($token, Messages::StrictLHSAssignment);
 			}
 
@@ -1766,7 +1766,7 @@ class Parser {
 		$node = new Identifier($this);
 		$token = $this->lex();
 
-		if ($token->type !== Token::Identifier) {
+		if ($token->type !== Token::IDENTIFIER) {
 			$this->throwUnexpected($token);
 		}
 
@@ -1992,7 +1992,7 @@ class Parser {
 			return $node->finish('\EsprimaPhp\Node\Statement\ContinueStatement', $this, null);
 		}
 
-        if ($this->lookahead->type == Token::Identifier) {
+        if ($this->lookahead->type == Token::IDENTIFIER) {
 			$label = $this->parseVariableIdentifier();
 
 			$key = '$' . $label->name;
@@ -2032,7 +2032,7 @@ class Parser {
 			return $node->finish('\EsprimaPhp\Node\Statement\BreakStatement', $this, null);
 		}
 
-        if ($this->lookahead->type == Token::Identifier) {
+        if ($this->lookahead->type == Token::IDENTIFIER) {
 			$label = $this->parseVariableIdentifier();
 
 			$key = '$' . $label->name;
@@ -2248,12 +2248,12 @@ class Parser {
 			$this->throwUnexpected($this->lookahead);
 		}
 
-		if ($type == Token::Punctuator && $this->lookahead->value == '{') {
+		if ($type == Token::PUNCTUATOR && $this->lookahead->value == '{') {
 			return $this->parseBlock();
 		}
 
 		$node = new MutableNode($this);
-		if ($type == Token::Punctuator) {
+		if ($type == Token::PUNCTUATOR) {
 			switch ($this->lookahead->value) {
 				case ';':
 					return $this->parseEmptyStatement($node);
@@ -2262,7 +2262,7 @@ class Parser {
 				default:
 					break;
 			}
-		} else if ($type == Token::Keyword) {
+		} else if ($type == Token::KEYWORD) {
 			switch ($this->lookahead->value) {
 				case 'break':
 					return $this->parseBreakStatement($node);
@@ -2300,7 +2300,7 @@ class Parser {
 		$expr = $this->parseExpression();
 
 		// 12.12 Labelled Statements
-		if (($expr->type == Syntax::Identifier) && $this->match(':')) {
+		if (($expr->type == Syntax::IDENTIFIER) && $this->match(':')) {
 			$this->lex();
 
 			$key = '$' . $expr->name;
@@ -2327,14 +2327,14 @@ class Parser {
 		$this->expect('{');
 
 		while ($this->index < $this->length) {
-			if ($this->lookahead->type !== Token::StringLiteral) {
+			if ($this->lookahead->type !== Token::STRING_LITERAL) {
 				break;
 			}
 			$token = $this->lookahead;
 
 			$sourceElement = $this->parseSourceElement();
 			$sourceElements->push($sourceElement);
-			if ($sourceElement->expression->type !== Syntax::Literal) {
+			if ($sourceElement->expression->type !== Syntax::LITERAL) {
 				// this is not directive
 				break;
 			}
@@ -2556,13 +2556,13 @@ class Parser {
 
 		while ($this->index < $this->length) {
 			$token = $this->lookahead;
-			if ($token->type !== Token::StringLiteral) {
+			if ($token->type !== Token::STRING_LITERAL) {
 				break;
 			}
 
 			$sourceElement = $this->parseSourceElement();
 			$sourceElements->push($sourceElement);
-			if ($sourceElement->expression->type !== Syntax::Literal) {
+			if ($sourceElement->expression->type !== Syntax::LITERAL) {
 				// this is not directive
 				break;
 			}
@@ -2591,7 +2591,7 @@ class Parser {
 	}
 	private function parseSourceElement()
 	{
-		if ($this->lookahead->type == Token::Keyword) {
+		if ($this->lookahead->type == Token::KEYWORD) {
 			switch ($this->lookahead->value) {
 				case 'const':
 				case 'let':

@@ -8,7 +8,7 @@ use EsprimaPhp\Parser\Syntax;
  */
 class PostfixExpression extends Expression
 {
-	public $type = Syntax::UpdateExpression;
+	public $type = Syntax::UPDATE_EXPRESSION;
 	public $operator;
 	public $argument;
 	public $prefix;

@@ -8,7 +8,7 @@ class ForInStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ForInStatement;
+	public $type = Syntax::FOR_IN_STATEMENT;
 	/**
 	 * @var VariableDeclaration | Expression
 	 */

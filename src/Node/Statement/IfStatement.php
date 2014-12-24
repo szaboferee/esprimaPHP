@@ -9,7 +9,7 @@ class IfStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::IfStatement;
+	public $type = Syntax::IF_STATEMENT;
 	/**
 	 * @var Expression
 	 */

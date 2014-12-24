@@ -11,7 +11,7 @@ class AssignmentExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::AssignmentExpression;
+	public $type = Syntax::ASSIGNMENT_EXPRESSION;
 
 	/**
 	 * @var AssignmentOperator

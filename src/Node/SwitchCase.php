@@ -6,7 +6,7 @@ use EsprimaPhp\Parser\Syntax;
 
 class SwitchCase extends Node
 {
-	public $type = Syntax::SwitchCase;
+	public $type = Syntax::SWITCH_CASE;
 	public $test;
 	public $consequent;
 

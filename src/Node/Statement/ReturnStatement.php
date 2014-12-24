@@ -9,7 +9,7 @@ class ReturnStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ReturnStatement;
+	public $type = Syntax::RETURN_STATEMENT;
 	/**
 	 * @var Expression|null
 	 */

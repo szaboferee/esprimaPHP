@@ -6,7 +6,7 @@ use EsprimaPhp\Parser\Syntax;
 
 class Identifier extends Expression
 {
-	public $type = Syntax::Identifier;
+	public $type = Syntax::IDENTIFIER;
 	public $name;
 
 	/**

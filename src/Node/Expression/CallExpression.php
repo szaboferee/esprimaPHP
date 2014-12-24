@@ -14,7 +14,7 @@ class CallExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::CallExpression;
+	public $type = Syntax::CALL_EXPRESSION;
 
 	/**
 	 * @var Expression

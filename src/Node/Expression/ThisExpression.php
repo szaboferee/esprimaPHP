@@ -9,7 +9,7 @@ class ThisExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ThisExpression;
+	public $type = Syntax::THIS_EXPRESSION;
 
 	public function finish($esprima)
 	{

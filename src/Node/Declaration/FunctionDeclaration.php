@@ -11,7 +11,7 @@ class FunctionDeclaration extends Declaration
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::FunctionDeclaration;
+	public $type = Syntax::FUNCTION_DECLARATION;
 
 	/**
 	 * @var Identifier|null

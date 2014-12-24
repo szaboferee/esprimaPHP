@@ -7,7 +7,7 @@ use EsprimaPhp\Parser;
 
 class DebuggerStatement extends Statement
 {
-	public $type = Syntax::DebuggerStatement;
+	public $type = Syntax::DEBUGGER_STATEMENT;
 
 	public function finish($esprima)
 	{

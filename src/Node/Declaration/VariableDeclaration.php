@@ -13,7 +13,7 @@ class VariableDeclaration extends Declaration
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::VariableDeclaration;
+	public $type = Syntax::VARIABLE_DECLARATION;
 
 	/**
 	 * @var VariableDeclarator[]

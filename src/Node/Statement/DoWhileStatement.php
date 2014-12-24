@@ -10,7 +10,7 @@ class DoWhileStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::DoWhileStatement;
+	public $type = Syntax::DO_WHILE_STATEMENT;
 	/**
 	 * @var Statement
 	 */

@@ -9,7 +9,7 @@ class ExpressionStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ExpressionStatement;
+	public $type = Syntax::EXPRESSION_STATEMENT;
 	/**
 	 * @var Expression
 	 */

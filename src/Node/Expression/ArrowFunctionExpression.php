@@ -11,7 +11,7 @@ class ArrowFunctionExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ArrowFunctionExpression;
+	public $type = Syntax::ARROW_FUNCTION_EXPRESSION;
 
     public $id = null;
 

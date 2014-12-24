@@ -14,7 +14,7 @@ class MemberExpression extends Node
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::MemberExpression;
+	public $type = Syntax::MEMBER_EXPRESSION;
 
     /**
      * @var boolean

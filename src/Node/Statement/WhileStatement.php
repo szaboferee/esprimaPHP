@@ -9,7 +9,7 @@ class WhileStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::WhileStatement;
+	public $type = Syntax::WHILE_STATEMENT;
 	/**
 	 * @var Expression
 	 */

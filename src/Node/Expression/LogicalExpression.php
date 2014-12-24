@@ -9,5 +9,5 @@ class LogicalExpression extends BinaryExpression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::LogicalExpression;
+	public $type = Syntax::LOGICAL_EXPRESSION;
 }

@@ -10,7 +10,7 @@ class SwitchStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::SwitchStatement;
+	public $type = Syntax::SWITCH_STATEMENT;
 	/**
 	 * @var Expression
 	 */

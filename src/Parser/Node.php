@@ -37,7 +37,7 @@ class Node implements JsonSerializable
 		$bottomRight = $esprima->extra->bottomRightStack;
 		$last = count($bottomRight) ? $bottomRight[count($bottomRight) - 1] : null;
 
-		if ($this->type === Syntax::Program) {
+		if ($this->type === Syntax::PROGRAM) {
 			if (count($this->body) > 0) {
 				return;
 			}
@@ -127,7 +127,7 @@ class Node implements JsonSerializable
 	protected function node($esprima)
 	{
 		$esprima->index = $esprima->lookahead->start;
-		if ($esprima->lookahead->type === Token::StringLiteral) {
+		if ($esprima->lookahead->type === Token::STRING_LITERAL) {
 			$esprima->lineNumber = $esprima->lookahead->startLineNumber;
 			$esprima->lineStart = $esprima->lookahead->startLineStart;
 		} else {

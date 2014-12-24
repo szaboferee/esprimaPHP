@@ -51,7 +51,7 @@ class SourceLocation {
 	 */
 	protected static function wrappingSourceLocation($startToken)
 	{
-		if (property_exists($startToken, 'type') && $startToken->type === Token::StringLiteral) {
+		if (property_exists($startToken, 'type') && $startToken->type === Token::STRING_LITERAL) {
 			return new self(
 				new Position(
 					$startToken->startLineNumber,

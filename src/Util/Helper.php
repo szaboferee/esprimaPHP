@@ -7,34 +7,15 @@ use EsprimaPhp\Regex;
 
 class Helper {
 	public static function isWhiteSpace($ch) {
-        $whitespaces = [
-            0x20,
-            0x09,
-            0x0B,
-            0x0C,
-            0xA0,
-            0x1680,
-            0x180E,
-            0x2000,
-            0x2001,
-            0x2002,
-            0x2003,
-            0x2004,
-            0x2005,
-            0x2006,
-            0x2007,
-            0x2008,
-            0x2009,
-            0x200A,
-            0x202F,
-            0x205F,
-            0x3000,
-            0xFEFF
+        $whitespaces = [ 0x20,0x09,0x0B,0x0C,0xA0,
+            0x1680,0x180E,0x2000,0x2001,0x2002,0x2003,
+            0x2004,0x2005,0x2006,0x2007,0x2008,0x2009,
+            0x200A,0x202F,0x205F,0x3000,0xFEFF
         ];
         return in_array($ch, $whitespaces);
 	}
 	public static function isLineTerminator($ch) {
-		return ($ch === 0x0A) || ($ch === 0x0D) || ($ch === 0x2028) || ($ch === 0x2029);
+		return in_array($ch, [0x0A,  0x0D, 0x2028, 0x2029]);
 	}
 	public static function isDecimalDigit($ch) {
 		return ($ch >= 0x30 && $ch <= 0x39);   // 0..9
@@ -63,70 +44,35 @@ class Helper {
 	}
 	public static function isKeyword($id, $strict)
 	{
-		if ($strict && self::isStrictModeReservedWord($id)) {
-			return true;
-		}
+        if ($strict && self::isStrictModeReservedWord($id)) {
+            return true;
+        }
 
-		// 'const' is specialized as Keyword in V8.
-		// 'yield' and 'let' are for compatiblity with SpiderMonkey and ES.next.
-		// Some others are from future reserved words.
+        // 'const' is specialized as Keyword in V8.
+        // 'yield' and 'let' are for compatiblity with SpiderMonkey and ES.next.
+        // Some others are from future reserved words.
 
-		switch (strlen($id)) {
-			case 2:
-				return ($id === 'if') || ($id === 'in') || ($id === 'do');
-			case 3:
-				return ($id === 'var') || ($id === 'for') || ($id === 'new') ||
-				($id === 'try') || ($id === 'let');
-			case 4:
-				return ($id === 'this') || ($id === 'else') || ($id === 'case') ||
-				($id === 'void') || ($id === 'with') || ($id === 'enum');
-			case 5:
-				return ($id === 'while') || ($id === 'break') || ($id === 'catch') ||
-				($id === 'throw') || ($id === 'const') || ($id === 'yield') ||
-				($id === 'class') || ($id === 'super');
-			case 6:
-				return ($id === 'return') || ($id === 'typeof') || ($id === 'delete') ||
-				($id === 'switch') || ($id === 'export') || ($id === 'import');
-			case 7:
-				return ($id === 'default') || ($id === 'finally') || ($id === 'extends');
-			case 8:
-				return ($id === 'function') || ($id === 'continue') || ($id === 'debugger');
-			case 10:
-				return ($id === 'instanceof');
-			default:
-				return false;
-		}
-	}
+        return in_array($id, [
+                'if', 'in', 'do', 'var', 'for', 'new',  'try',  'let',
+                'this',  'else',  'case','void',  'with',  'enum',
+                'while',  'break',  'catch','throw',  'const',  'yield',
+                'class',  'super', 'return',  'typeof',  'delete',
+                'switch',  'export',  'import', 'default',  'finally',
+                'extends', 'function',  'continue',  'debugger',  'instanceof'
+            ]);
+    }
 	public static function isStrictModeReservedWord($id) {
-		switch ($id) {
-			case 'implements':
-			case 'interface':
-			case 'package':
-			case 'private':
-			case 'protected':
-			case 'public':
-			case 'static':
-			case 'yield':
-			case 'let':
-				return true;
-			default:
-				return false;
-		}
+        return in_array($id, [
+            'implements','interface','package','private',
+			 'protected','public','static','yield','let'
+            ]);
 	}
 
 	public static function isFutureReservedWord($id)
 	{
-		switch ($id) {
-			case 'class':
-			case 'enum':
-			case 'export':
-			case 'extends':
-			case 'import':
-			case 'super':
-				return true;
-			default:
-				return false;
-		}
+        return in_array($id, [
+			 'class', 'enum', 'export', 'extends','import', 'super'
+            ]);
 	}
 
 	public static function isRestrictedWord($id)
@@ -134,20 +80,20 @@ class Helper {
 		return $id === 'eval' || $id === 'arguments';
 	}
 	public static function isLeftHandSide($expr) {
-		return $expr->type === Syntax::Identifier || $expr->type === Syntax::MemberExpression;
+		return $expr->type === Syntax::IDENTIFIER || $expr->type === Syntax::MEMBER_EXPRESSION;
 	}
 
 	public static function isIdentifierName($token) {
-		return $token->type === Token::Identifier ||
-		$token->type === Token::Keyword ||
-		$token->type === Token::BooleanLiteral ||
-		$token->type === Token::NullLiteral;
+		return $token->type === Token::IDENTIFIER ||
+		$token->type === Token::KEYWORD ||
+		$token->type === Token::BOOLEAN_LITERAL ||
+		$token->type === Token::NULL_LITERAL;
 	}
 
 	public static function binaryPrecedence($token, $allowIn) {
 		$prec = 0;
 
-		if ($token->type !== Token::Punctuator && $token->type !== Token::Keyword) {
+		if ($token->type !== Token::PUNCTUATOR && $token->type !== Token::KEYWORD) {
 			return 0;
 		}
 

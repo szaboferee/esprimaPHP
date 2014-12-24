@@ -6,7 +6,7 @@ use EsprimaPhp\Parser\Syntax;
 
 class CatchClause extends Node
 {
-		public $type = Syntax::CatchClause;
+		public $type = Syntax::CATCH_CLAUSE;
 	public $param;
 	public $body;
 

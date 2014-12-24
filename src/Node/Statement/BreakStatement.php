@@ -11,7 +11,7 @@ class BreakStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::BreakStatement;
+	public $type = Syntax::BREAK_STATEMENT;
 	/**
 	 * @var Identifier
 	 */

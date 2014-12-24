@@ -9,5 +9,5 @@ class UpdateExpression extends UnaryExpression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::UpdateExpression;
+	public $type = Syntax::UPDATE_EXPRESSION;
 }

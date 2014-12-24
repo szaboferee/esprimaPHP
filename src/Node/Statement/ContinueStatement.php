@@ -11,7 +11,7 @@ class ContinueStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ContinueStatement;
+	public $type = Syntax::CONTINUE_STATEMENT;
 	/**
 	 * @var Identifier|null
 	 */

@@ -14,7 +14,7 @@ class Literal extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::Literal;
+	public $type = Syntax::LITERAL;
 
 	/**
 	 * @var mixed
@@ -35,13 +35,13 @@ class Literal extends Expression
 	public function finish($esprima, $token) {
 
         switch($token->type) {
-            case Token::BooleanLiteral:
+            case Token::BOOLEAN_LITERAL:
                 $this->value = (boolean) $token->value;
                 break;
-            case Token::StringLiteral:
+            case Token::STRING_LITERAL:
 		        $this->value = stripcslashes((string)$token->value);
                 break;
-            case Token::NumericLiteral:
+            case Token::NUMERIC_LITERAL:
             default:
                 $this->value = $token->value;
                 break;

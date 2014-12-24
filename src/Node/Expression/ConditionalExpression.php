@@ -12,7 +12,7 @@ class ConditionalExpression extends Expression
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::ConditionalExpression;
+	public $type = Syntax::CONDITIONAL_EXPRESSION;
 
 	/**
 	 * @var Expression

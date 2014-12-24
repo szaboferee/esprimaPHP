@@ -9,7 +9,7 @@ class Program extends Node
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::Program;
+	public $type = Syntax::PROGRAM;
 	/**
 	 * @var Statement[]
 	 */

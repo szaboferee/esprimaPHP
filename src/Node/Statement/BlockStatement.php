@@ -13,7 +13,7 @@ class BlockStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::BlockStatement;
+	public $type = Syntax::BLOCK_STATEMENT;
 	/**
 	 * @var Statement[]
 	 */

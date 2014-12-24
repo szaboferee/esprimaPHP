@@ -6,7 +6,7 @@ use EsprimaPhp\Node\Statement;
 use EsprimaPhp\Parser\Syntax;
 
 class ForOfStatement extends Statement {
-	public $type = Syntax::ForOfStatement;
+	public $type = Syntax::FOR_OF_STATEMENT;
 	/**
 	 * @var VariableDeclaration | Expression
 	 */

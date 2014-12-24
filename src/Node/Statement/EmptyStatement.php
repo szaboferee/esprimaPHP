@@ -9,7 +9,7 @@ use EsprimaPhp\Parser\Syntax;
 
 class EmptyStatement extends Statement
 {
-	public $type = Syntax::EmptyStatement;
+	public $type = Syntax::EMPTY_STATEMENT;
 
 	public function finish($esprima)
 	{

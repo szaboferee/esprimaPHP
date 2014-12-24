@@ -9,7 +9,7 @@ class LetStatement extends Statement
 	/**
 	 * @var string
 	 */
-	public $type = Syntax::LetStatement;
+	public $type = Syntax::LET_STATEMENT;
 	/**
 	 * @var VariableDeclarator[]
 	 */
