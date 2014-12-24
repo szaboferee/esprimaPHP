@@ -36,7 +36,7 @@ class Literal extends Expression
 
         switch($token->type) {
             case Token::BooleanLiteral:
-                $this->value = boolval($token->value);
+                $this->value = (boolean) $token->value;
                 break;
             case Token::StringLiteral:
 		        $this->value = stripcslashes((string)$token->value);
