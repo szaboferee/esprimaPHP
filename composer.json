@@ -15,11 +15,6 @@
 		"codeclimate/php-test-reporter": "dev-master",
         "squizlabs/php_codesniffer": "2.0.*@dev"
 	},
-    "scripts": {
-        "post-install-cmd": [
-            "bash contrib/setup.sh"
-        ]
-    },
 	"autoload": {
 		"psr-4": {
 			"EsprimaPhp\\": "src/",
