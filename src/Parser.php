@@ -2695,9 +2695,8 @@ class Parser {
             }
         } catch (Exception $e) {
             throw $e;
-        } finally {
-            $this->extra = null;
         }
+        
         return $tokens;
     }
 	public function parse($source, $options = null)
