@@ -4,7 +4,7 @@ namespace EsprimaPhp\Parser;
 use EsprimaPhp\TokenName;
 use InvalidArgumentException;
 
-class Token {
+class Token implements \JsonSerializable {
 	const BOOLEAN_LITERAL = 1;
 	const EOF = 2;
 	const IDENTIFIER = 3;
@@ -19,10 +19,6 @@ class Token {
 	protected $lineStart;
 	protected $start;
 	protected $end;
-	/**
-	 * @var Regex
-	 */
-	protected $regex;
 	protected $startLineNumber;
 	protected $startLineStart;
 	protected $prec;
@@ -30,8 +26,13 @@ class Token {
 
 	public $type;
 	public $value;
+    /**
+     * @var Regex
+     */
+    public $regex;
 
-	public static function name($token)
+
+    public static function name($token)
 	{
 		switch($token) {
 			case self::BOOLEAN_LITERAL: return TokenName::BOOLEAN_LITERAL;
@@ -66,5 +67,18 @@ class Token {
 		$this->$name = $value;
 	}
 
+    public function jsonSerialize()
+    {
+        $object = get_object_vars($this);
+
+        $ret = array();
+        foreach($object as $key => $value) {
+            if($value !== null) {
+                $ret[$key] = $value;
+            }
+        }
+
+        return (object) $ret;
+    }
 
 }

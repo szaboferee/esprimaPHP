@@ -21,7 +21,9 @@ class ArrayList implements ArrayAccess, Countable, JsonSerializable {
 
 	public function offsetGet($offset)
 	{
-		if (! array_key_exists($offset, $this->array)) var_dump($offset, $this);
+		if (!array_key_exists($offset, $this->array)) {
+            return null;
+        }
 		return $this->array[$offset];
 	}
 

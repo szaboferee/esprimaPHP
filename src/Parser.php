@@ -26,6 +26,7 @@ use EsprimaPhp\Node\Statement\BlockStatement;
 use EsprimaPhp\Node\Statement\EmptyStatement;
 use EsprimaPhp\Node\SwitchCase;
 use EsprimaPhp\Node\VariableDeclarator;
+use EsprimaPhp\Parser\Node;
 use EsprimaPhp\Parser\Position;
 use EsprimaPhp\Parser\SourceLocation;
 use EsprimaPhp\Parser\State;
@@ -59,13 +60,10 @@ class Parser {
 	 * @var Extra
 	 */
 	public $extra;
-	public  $lookahead;
-
-	function __construct()
-	{
-		$this->extra = new Extra();
-		$this->state = new State();
-	}
+    /**
+     * @var Node
+     */
+    public  $lookahead;
 
 	/**
 	 * @param integer $type
@@ -447,7 +445,7 @@ class Parser {
 		}
 
 		// Other 2-character punctuators: ++ -- << >> && ||
-		$ch2 = substr($ch3, 0, 2);
+		$ch2 = new SourceString(substr($ch3, 0, 2));
 
 		if (($ch1 == $ch2[1] && (strpos('+-<>&|', (string)$ch1) !== false)) || $ch2 == '=>') {
 			$this->index += 2;
@@ -1084,7 +1082,7 @@ class Parser {
 	{
 		return $this->lookahead->type == Token::PUNCTUATOR && $this->lookahead->value == $value;
 	}
-	public function matchKeyword($keyword) {
+	private function matchKeyword($keyword) {
 		return $this->lookahead->type == Token::KEYWORD && $this->lookahead->value == $keyword;
 	}
 	private function matchAssign()
@@ -1538,7 +1536,7 @@ class Parser {
 				$operator = $stack->pop()->value;
 				$left = $stack->pop();
 				$markers->pop();
-				$expr = ($operator === '||' || $operator === '&&')
+				$expr = ($operator == '||' || $operator == '&&')
 					? (new LogicalExpression($this, $markers[count($markers) - 1]))->finish($this, $operator, $left, $right)
 					: (new BinaryExpression($this, $markers[count($markers) - 1]))->finish($this, $operator, $left, $right);
 				$stack->push($expr);
@@ -1558,7 +1556,7 @@ class Parser {
 		$expr = $stack[$i];
 		$markers->pop();
 		while ($i > 1) {
-			$expr = ($stack[$i - 1]->value === '||' || $stack[$i - 1]->value === '&&')
+			$expr = ($stack[$i - 1]->value == '||' || $stack[$i - 1]->value == '&&')
 				? (new LogicalExpression($this, $markers->pop()))->finish($this, $stack[$i - 1]->value, $stack[$i - 2], $expr)
 				: (new BinaryExpression($this, $markers->pop()))->finish($this, $stack[$i - 1]->value, $stack[$i - 2], $expr);
 			$i -= 2;
@@ -2638,7 +2636,70 @@ class Parser {
 		$this->extra->tokens = $tokens;
 	}
 
-	public function tokenize($source, $options) {}
+	public function tokenize($source, $options = array()) {
+
+        $this->source = new SourceString($source);
+        $this->index = 0;
+        $this->length = $this->source->length();
+        $this->lineNumber = $this->length > 0 ? 1 : 0;
+        $this->lineStart = 0;
+        $this->lookahead = null;
+        $this->state = new State();
+        $this->extra = new Extra();
+
+        $options = $options ?: array();
+
+        $options['tokens'] = true;
+        $this->extra->tokens = new ArrayList();
+        $this->extra->tokenize = true;
+        // The following two fields are necessary to compute the Regex tokens.
+        $this->extra->openParenToken = -1;
+        $this->extra->openCurlyToken = -1;
+
+        if(array_key_exists('range', $options) && is_bool($options['range']))
+            $this->extra->range = $options['range'];
+			if(array_key_exists('loc', $options) && is_bool($options['loc']))
+                $this->extra->loc = $options['loc'];
+			if(array_key_exists('comment', $options) && is_bool($options['comment']) && $options['comment'])
+                $this->extra->comments = new ArrayList();
+			if(array_key_exists('tolerant', $options) && is_bool($options['tolerant']) && $options['tolerant'])
+                $this->extra->errors = new ArrayList();
+
+        try {
+            $this->peek();
+            if ($this->lookahead->type === Token::EOF) {
+                return $this->extra->tokens;
+            }
+
+            $this->lex();
+            while ($this->lookahead->type !== Token::EOF) {
+                try {
+                    $this->lex();
+                } catch (Error $lexError) {
+                    if ($this->extra->errors) {
+                        $this->extra->errors->push($lexError);
+                        break;
+                    } else {
+                        throw $lexError;
+                    }
+                }
+            }
+
+            $this->filterTokenLocation();
+            $tokens = $this->extra->tokens;
+            if($this->extra->comments) {
+                $tokens->comments = $this->extra->comments;
+            }
+			if($this->extra->errors && count($this->extra->errors)) {
+                $tokens->errors = $this->extra->errors;
+            }
+        } catch (Exception $e) {
+            throw $e;
+        } finally {
+            $this->extra = null;
+        }
+        return $tokens;
+    }
 	public function parse($source, $options = null)
 	{
 		$this->source = new SourceString($source);
@@ -2646,7 +2707,11 @@ class Parser {
 		$this->length = $this->source->length();
 		$this->lineNumber = $this->length > 0 ? 1 : 0;
 
-		if ($options !== null) {
+        $this->state = new State();
+        $this->extra = new Extra();
+
+
+        if ($options !== null) {
 			if(array_key_exists('range', $options) && is_bool($options['range']))
 				$this->extra->range = $options['range'];
 			if(array_key_exists('loc', $options) && is_bool($options['loc']))

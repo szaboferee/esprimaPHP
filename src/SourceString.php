@@ -31,6 +31,7 @@ class SourceString implements ArrayAccess, JsonSerializable
 
 	public function offsetGet($offset)
 	{
+        if(!$this->offsetExists($offset)) return null;
 		return new SourceString($this->string[$offset]);
 	}
 
