@@ -9,7 +9,13 @@ class SourceString implements ArrayAccess, JsonSerializable
 {
 	private $string = '';
 	public function __construct($string) {
-		$this->string = $string;
+		if(is_bool($string)) {
+            $this->string = $string ? 'true' : 'false';
+        } else if(is_null($string)) {
+            $this->string = 'null';
+        } else {
+            $this->string = (string) $string;
+        }
 	}
 	public function __toString() {
 		return $this->string;

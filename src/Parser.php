@@ -2636,7 +2636,7 @@ class Parser {
 		$this->extra->tokens = $tokens;
 	}
 
-	public function tokenize($source, $options = array()) {
+	public function tokenize($source = null, $options = array()) {
 
         $this->source = new SourceString($source);
         $this->index = 0;
@@ -2702,7 +2702,7 @@ class Parser {
 
         return $tokens;
     }
-	public function parse($source, $options = null)
+	public function parse($source = null, $options = null)
 	{
 		$this->source = new SourceString($source);
 		$this->index = 0;

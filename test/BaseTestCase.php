@@ -85,7 +85,27 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 
 	private function _testAPI($code, $expectedTree)
 	{
-		$this->markTestIncomplete();
+        try {
+            $actualTree = call_user_func_array(array($this->esprima, $expectedTree->call), $expectedTree->args);
+        } catch (Error $e) {
+            $this->fail('Parsing failed:' . $e);
+        }
+
+        $expectedTree = $expectedTree->result;
+        $actualTree = json_encode($actualTree);
+
+        /**
+        echo "\nC: " . $code. "\n";
+        echo "\nE: " . json_encode($expectedTree). "\n";
+        echo "\nA: " . $actualTree. "\n";
+        /**/
+        //$actualTree = json_decode($actualTree);
+        $expectedTree = json_encode($expectedTree);
+
+
+        $this->assertEquals($expectedTree, $actualTree);
+
+
 	}
 
 	private function _testTokenize($code, $expectedTree)
