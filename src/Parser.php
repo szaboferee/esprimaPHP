@@ -2694,9 +2694,12 @@ class Parser {
                 $tokens->errors = $this->extra->errors;
             }
         } catch (Exception $e) {
+            $this->extra = null;
             throw $e;
         }
-        
+
+        $this->extra = null;
+
         return $tokens;
     }
 	public function parse($source, $options = null)
