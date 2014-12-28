@@ -635,7 +635,7 @@ class Parser {
 
 						default:
 							if (Helper::isOctalDigit($ch)) {
-								$code = strpos('01234567', $ch);
+								$code = strpos('01234567', (string)$ch);
 
 								// \0 is not octal escape sequence
 								if ($code !== 0) {
@@ -679,7 +679,7 @@ class Parser {
 		}
 
 		$token =  new Token(Token::STRING_LITERAL, $str, $this->lineNumber, $this->lineStart, $start, $this->index);
-		$token->octale = $octal;
+		$token->octal = $octal;
 		$token->startLineNumber = $startLineNumber;
 		$token->startLineStart = $startLineStart;
 
@@ -687,8 +687,15 @@ class Parser {
 	}
 	private function testRegExp($pattern, $flags)
 	{
-		//@TODO implement
-		return new Regex($pattern, $flags);
+        // firefox y flag hack
+        if (strpos($flags, 'y') !== false) return null;
+
+        $exp = "/" . $pattern . "/" . $flags;
+        if(@preg_match($exp, null) === false) {
+            $this->throwError(null, Messages::InvalidRegExp);
+        } else {
+            return $exp;
+        }
 	}
 	private function scanRegExpBody()
 	{
@@ -813,7 +820,7 @@ class Parser {
 					}
 				}
 			}
-			$newToken = new Token('RegularExpression', $regex->literal, null, null, null, null);
+			$newToken = new Token('RegularExpression', $regex->literal);
 			$newToken->regex = $regex->regex;
 			$newToken->range = [$pos, $this->index];
 			$newToken->loc = $loc;
@@ -991,14 +998,13 @@ class Parser {
 		$token = array_shift($args);
 		$msg =  call_user_func_array('sprintf', $args);
 
-
-		if (isset($token->lineNumber)) {
-			$error = new Error('Line ' . $token->lineNumber . ': ' . $msg);
+		if ($token && property_exists($token, 'lineNumber')) {
+			$error = new Error('Error: Line ' . $token->lineNumber . ': ' . $msg);
 			$error->index = $token->start;
 			$error->lineNumber = $token->lineNumber;
 			$error->column = $token->start - $this->lineStart + 1;
 		} else {
-			$error = new Error('Line ' . $this->lineNumber . ': ' . $msg);
+			$error = new Error('Error: Line ' . $this->lineNumber . ': ' . $msg);
 			$error->index = $this->index;
 			$error->lineNumber = $this->lineNumber;
 			$error->column = $this->index - $this->lineStart + 1;
@@ -1062,7 +1068,8 @@ class Parser {
 	{
 		if ($this->extra->errors) {
 			$token = $this->lookahead;
-			if ($token->type !== Token::PUNCTUATOR && $token->value != $value) {
+			if ($token->type !== Token::PUNCTUATOR && $token->value != $value)
+            {
 				$this->throwErrorTolerant($token, Messages::UnexpectedToken, $token->value);
 			} else {
 				$this->lex();
@@ -1239,14 +1246,14 @@ class Parser {
 			} else {
 				$name = (string) $property->key->value;
 			}
-			$kind = ($property->kind == 'init') ? PropertyKind::Data : ($property->kind == 'get') ? PropertyKind::Get : PropertyKind::Set;
+			$kind = $property->kind == 'init' ? PropertyKind::Data : ($property->kind == 'get' ? PropertyKind::Get : PropertyKind::Set);
 
 			$key = '$' . $name;
 			if (isset($map[$key])) {
 				if ($map[$key] == PropertyKind::Data) {
 					if ($this->strict && $kind == PropertyKind::Data) {
 						$this->throwErrorTolerant(null, Messages::StrictDuplicateProperty);
-					} else if ($kind !== PropertyKind::Data) {
+					} else if ($kind != PropertyKind::Data) {
 						$this->throwErrorTolerant(null, Messages::AccessorDataProperty);
 					}
 				} else {
@@ -1291,7 +1298,7 @@ class Parser {
 	}
 	private function parsePrimaryExpression()
 	{
-		$node = new MutableNode($this);
+
 		$expr = null;
 		if ($this->match('(')) {
 			return $this->parseGroupExpression();
@@ -1306,6 +1313,7 @@ class Parser {
 		}
 
 		$type = $this->lookahead->type;
+        $node = new MutableNode($this);
 
 		if ($type == Token::IDENTIFIER) {
 			$expr = $node->finish('\EsprimaPhp\Node\Identifier', $this, $this->lex()->value);

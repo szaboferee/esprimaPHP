@@ -78,9 +78,43 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 	return false;
 }
 
-	private function _testError($code, $expectedTree)
-	{
-		$this->markTestIncomplete();
+	private function _testError($code, $exception)
+    {
+        // Different parsing options should give the same error.
+        $options = [
+            [],
+            [ 'comment' => true ],
+            [ 'raw' => true ],
+            [ 'raw' => true, 'comment' => true ],
+        ];
+        $tokenize = false;
+        $actual = 'no error';
+        $exception->description = preg_replace('/Error: Line [0-9]+: /', '', $exception->message);
+
+        if (property_exists($exception, 'tokenize') && $exception->tokenize) {
+            $tokenize = true;
+            unset($exception->tokenize);
+        }
+
+        $expected = json_encode($exception);
+        $expected = $exception;
+
+        foreach($options as $option) {
+
+            try {
+                if ($tokenize) {
+                    $this->esprima->tokenize($code, $option);
+                } else {
+                    $this->esprima->parse($code, $option);
+                }
+            } catch (Error $e) {
+                $actual = json_encode($e);
+                $actual = $this->errorToObject($e);
+            }
+
+            $this->assertEquals($expected, $actual);
+
+        }
 	}
 
 	private function _testAPI($code, $expectedTree)
@@ -153,7 +187,7 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 			'loc' => true,
 			'tokens' => property_exists($expectedTree, 'tokens'),
 			'raw' => true,
-			'tolerant' => property_exists($expectedTree, 'tolerant'),
+			'tolerant' => property_exists($expectedTree, 'errors'),
 			'source' => null,
 			'attachComment' => $this->hasAttachedComment($expectedTree)
 		];
@@ -195,4 +229,15 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expectedTree, $actualTree);
 
 	}
+
+    private function errorToObject(Error $e)
+    {
+        return (object) [
+            'index' => $e->index,
+            'lineNumber' => $e->lineNumber,
+            'column' => $e->column,
+            'message' => $e->message,
+            'description' => $e->description,
+        ];
+    }
 }

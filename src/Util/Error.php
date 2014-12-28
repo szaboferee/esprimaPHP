@@ -3,7 +3,7 @@
 namespace EsprimaPhp\Util;
 
 
-class Error extends \Exception
+class Error extends \Exception implements \JsonSerializable
 {
 	public $message;
 	public $index;
@@ -21,5 +21,15 @@ class Error extends \Exception
             $this->column,
             $this->message
         );
+    }
+
+    public function jsonSerialize()
+    {
+       return (object) [
+         "index" => $this->index,
+         "lineNumber" => $this->lineNumber,
+         "column" => $this->column,
+         "message" => $this->message,
+       ];
     }
 }
