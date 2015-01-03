@@ -2,6 +2,9 @@
 
 namespace EsprimaPhp;
 
+// xdebug nesting level
+ini_set('xdebug.max_nesting_level', 1000);
+
 use EsprimaPhp\Node\CatchClause;
 use EsprimaPhp\Node\Declaration\FunctionDeclaration;
 use EsprimaPhp\Node\Declaration\VariableDeclaration;
