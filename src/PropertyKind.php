@@ -7,8 +7,9 @@
  */
 namespace EsprimaPhp;
 
-class PropertyKind {
-	const Data = 1;
-	const Get =  2;
-	const Set = 4;
+class PropertyKind
+{
+    const Data = 1;
+    const Get =  2;
+    const Set = 4;
 }

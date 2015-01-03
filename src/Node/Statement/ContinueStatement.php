@@ -8,25 +8,25 @@ use EsprimaPhp\Parser\Syntax;
  */
 class ContinueStatement extends Statement
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::CONTINUE_STATEMENT;
-	/**
-	 * @var Identifier|null
-	 */
-	public $label;
+    /**
+     * @var string
+     */
+    public $type = Syntax::CONTINUE_STATEMENT;
+    /**
+     * @var Identifier|null
+     */
+    public $label;
 
-	/**
-	 * @param EsprimaPHP $esprima
-	 * @param $label
-	 *
-	 * @return ContinueStatement
-	 */
-	public function finish($esprima, $label)
-	{
-		$this->label = $label;
-		return $this->finishNode($esprima);
-	}
+    /**
+     * @param EsprimaPHP $esprima
+     * @param $label
+     *
+     * @return ContinueStatement
+     */
+    public function finish($esprima, $label)
+    {
+        $this->label = $label;
+        return $this->finishNode($esprima);
+    }
 
 } 

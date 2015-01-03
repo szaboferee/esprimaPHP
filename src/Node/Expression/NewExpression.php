@@ -10,33 +10,33 @@ use EsprimaPhp\Util\ArrayList;
  */
 class NewExpression extends Expression
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::NEW_EXPRESSION;
+    /**
+     * @var string
+     */
+    public $type = Syntax::NEW_EXPRESSION;
 
-	/**
-	 * @var Expression
-	 */
-	public $callee;
+    /**
+     * @var Expression
+     */
+    public $callee;
 
-	/**
-	 * @var Expression[]
-	 */
-	public $arguments;
+    /**
+     * @var Expression[]
+     */
+    public $arguments;
 
-	/**
-	 * @param Parser $esprima
-	 * @param Expression $callee
-	 * @param ArrayList $args
-	 *
-	 * @return NewExpression
-	 */
-	public function finish($esprima, $callee, $args)
-	{
-		$this->callee = $callee;
-		$this->arguments = $args;
-		return $this->finishNode($esprima);
-	}
+    /**
+     * @param Parser     $esprima
+     * @param Expression $callee
+     * @param ArrayList  $args
+     *
+     * @return NewExpression
+     */
+    public function finish($esprima, $callee, $args)
+    {
+        $this->callee = $callee;
+        $this->arguments = $args;
+        return $this->finishNode($esprima);
+    }
 
 } 

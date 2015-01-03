@@ -10,26 +10,26 @@ use EsprimaPhp\Util\ArrayList;
  */
 class ObjectExpression extends Expression
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::OBJECT_EXPRESSION;
+    /**
+     * @var string
+     */
+    public $type = Syntax::OBJECT_EXPRESSION;
 
-	/**
-	 * @var Property[]
-	 */
-	public $properties;
+    /**
+     * @var Property[]
+     */
+    public $properties;
 
-	/**
-	 * @param Parser $esprima
-	 * @param ArrayList $properties
-	 *
-	 * @return ObjectExpression
-	 */
-	public function finish($esprima, $properties)
-	{
-		$this->properties = $properties;
-		return $this->finishNode($esprima);
-	}
+    /**
+     * @param Parser    $esprima
+     * @param ArrayList $properties
+     *
+     * @return ObjectExpression
+     */
+    public function finish($esprima, $properties)
+    {
+        $this->properties = $properties;
+        return $this->finishNode($esprima);
+    }
 
 } 

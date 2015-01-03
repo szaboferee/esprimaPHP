@@ -9,12 +9,12 @@ use EsprimaPhp\Parser\Syntax;
 
 class EmptyStatement extends Statement
 {
-	public $type = Syntax::EMPTY_STATEMENT;
+    public $type = Syntax::EMPTY_STATEMENT;
 
-	public function finish($esprima)
-	{
-		return $this->finishNode($esprima);
-	}
+    public function finish($esprima)
+    {
+        return $this->finishNode($esprima);
+    }
 
 
 } 

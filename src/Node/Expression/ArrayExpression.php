@@ -9,26 +9,26 @@ use EsprimaPhp\Util\ArrayList;
  */
 class ArrayExpression extends Expression
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::ARRAY_EXPRESSION;
+    /**
+     * @var string
+     */
+    public $type = Syntax::ARRAY_EXPRESSION;
 
-	/**
-	 * @var Expression[]|null[]
-	 */
-	public $elements;
+    /**
+     * @var Expression[]|null[]
+     */
+    public $elements;
 
-	/**
-	 * @param \EsprimaPhp\Parser $esprima
-	 * @param ArrayList $elements
-	 *
-	 * @return ArrayExpression
-	 */
-	public function finish($esprima, $elements)
-	{
-		$this->elements = $elements;
-		return $this->finishNode($esprima);
-	}
+    /**
+     * @param \EsprimaPhp\Parser $esprima
+     * @param ArrayList          $elements
+     *
+     * @return ArrayExpression
+     */
+    public function finish($esprima, $elements)
+    {
+        $this->elements = $elements;
+        return $this->finishNode($esprima);
+    }
 
 } 

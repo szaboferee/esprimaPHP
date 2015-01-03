@@ -6,14 +6,15 @@ use EsprimaPhp\Parser\Syntax;
 
 class SwitchCase extends Node
 {
-	public $type = Syntax::SWITCH_CASE;
-	public $test;
-	public $consequent;
+    public $type = Syntax::SWITCH_CASE;
+    public $test;
+    public $consequent;
 
-	public function finish($esprima, $test, $consequent) {
-		$this->test = $test;
-		$this->consequent = $consequent;
+    public function finish($esprima, $test, $consequent) 
+    {
+        $this->test = $test;
+        $this->consequent = $consequent;
 
-		return $this->finishNode($esprima);
-	}
+        return $this->finishNode($esprima);
+    }
 }

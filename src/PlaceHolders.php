@@ -7,8 +7,10 @@
  */
 namespace EsprimaPhp;
 
-class PlaceHolders {
-  public static function ArrowParameterPlaceHolder() {
-	return (object) ['type' => 'ArrowParameterPlaceHolder'];
-  }
+class PlaceHolders
+{
+    public static function ArrowParameterPlaceHolder() 
+    {
+        return (object) ['type' => 'ArrowParameterPlaceHolder'];
+    }
 }

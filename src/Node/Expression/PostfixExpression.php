@@ -8,17 +8,17 @@ use EsprimaPhp\Parser\Syntax;
  */
 class PostfixExpression extends Expression
 {
-	public $type = Syntax::UPDATE_EXPRESSION;
-	public $operator;
-	public $argument;
-	public $prefix;
+    public $type = Syntax::UPDATE_EXPRESSION;
+    public $operator;
+    public $argument;
+    public $prefix;
 
-	public function finish($esprima, $operator, $argument)
-	{
-		$this->operator = $operator;
-		$this->argument = $argument;
-		$this->prefix = false;
-		return $this->finishNode($esprima);
-	}
+    public function finish($esprima, $operator, $argument)
+    {
+        $this->operator = $operator;
+        $this->argument = $argument;
+        $this->prefix = false;
+        return $this->finishNode($esprima);
+    }
 
 } 

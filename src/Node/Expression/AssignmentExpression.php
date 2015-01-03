@@ -8,41 +8,41 @@ use EsprimaPhp\Parser\Syntax;
  */
 class AssignmentExpression extends Expression
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::ASSIGNMENT_EXPRESSION;
+    /**
+     * @var string
+     */
+    public $type = Syntax::ASSIGNMENT_EXPRESSION;
 
-	/**
-	 * @var AssignmentOperator
-	 */
-	public $operator;
+    /**
+     * @var AssignmentOperator
+     */
+    public $operator;
 
-	/**
-	 * @var Expression
-	 */
-	public $left;
+    /**
+     * @var Expression
+     */
+    public $left;
 
-	/**
-	 * @var Expression
-	 */
-	public $right;
+    /**
+     * @var Expression
+     */
+    public $right;
 
-	/**
-	 * @param EsprimaPHP $esprima
-	 * @param AssignmentOperator $operator
-	 * @param Expression $left
-	 * @param Expression $right
-	 *
-	 * @return AssignmentExpression
-	 */
-	public function finish($esprima, $operator, $left, $right)
-	{
-		$this->operator = $operator;
-		$this->left = $left;
-		$this->right = $right;
+    /**
+     * @param EsprimaPHP         $esprima
+     * @param AssignmentOperator $operator
+     * @param Expression         $left
+     * @param Expression         $right
+     *
+     * @return AssignmentExpression
+     */
+    public function finish($esprima, $operator, $left, $right)
+    {
+        $this->operator = $operator;
+        $this->left = $left;
+        $this->right = $right;
 
-		return $this->finishNode($esprima);
-	}
+        return $this->finishNode($esprima);
+    }
 
 } 

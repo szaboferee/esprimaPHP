@@ -7,28 +7,29 @@ use EsprimaPhp\Parser\Syntax;
 
 class SwitchStatement extends Statement
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::SWITCH_STATEMENT;
-	/**
-	 * @var Expression
-	 */
-	public $discriminant;
-	/**
-	 * @var SwitchCase[]
-	 */
-	public $cases;
+    /**
+     * @var string
+     */
+    public $type = Syntax::SWITCH_STATEMENT;
+    /**
+     * @var Expression
+     */
+    public $discriminant;
+    /**
+     * @var SwitchCase[]
+     */
+    public $cases;
 
-	/**
-	 * @param EsprimaPHP $esprima
-	 * @param Expression $discriminant
-	 * @param SwitchCase[] $cases
-	 */
-	public function finish($esprima, $discriminant, $cases) {
-		$this->discriminant = $discriminant;
-		$this->cases = $cases;
+    /**
+     * @param EsprimaPHP   $esprima
+     * @param Expression   $discriminant
+     * @param SwitchCase[] $cases
+     */
+    public function finish($esprima, $discriminant, $cases) 
+    {
+        $this->discriminant = $discriminant;
+        $this->cases = $cases;
 
-		return $this->finishNode($esprima);
-	}
+        return $this->finishNode($esprima);
+    }
 } 

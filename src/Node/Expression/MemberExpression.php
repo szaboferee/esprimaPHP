@@ -11,41 +11,41 @@ use EsprimaPhp\Parser;
  */
 class MemberExpression extends Node
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::MEMBER_EXPRESSION;
+    /**
+     * @var string
+     */
+    public $type = Syntax::MEMBER_EXPRESSION;
 
     /**
      * @var boolean
      */
     public $computed;
     /**
-	 * @var Expression
-	 */
-	public $object;
+     * @var Expression
+     */
+    public $object;
 
-	/**
-	 * @var Identifier|Expression
-	 */
-	public $property;
+    /**
+     * @var Identifier|Expression
+     */
+    public $property;
 
 
-	/**
-	 * @param Parser $esprima
-	 * @param string $accessor
-	 * @param Expression $object
-	 * @param Identifier|Expression $property
-	 *
-	 * @return MemberExpression
-	 */
-	public function finish($esprima, $accessor, $object, $property)
-	{
-		$this->object = $object;
-		$this->property = $property;
-		$this->computed = $accessor === '[';
+    /**
+     * @param Parser                $esprima
+     * @param string                $accessor
+     * @param Expression            $object
+     * @param Identifier|Expression $property
+     *
+     * @return MemberExpression
+     */
+    public function finish($esprima, $accessor, $object, $property)
+    {
+        $this->object = $object;
+        $this->property = $property;
+        $this->computed = $accessor === '[';
 
-		return $this->finishNode($esprima);
-	}
+        return $this->finishNode($esprima);
+    }
 
 } 

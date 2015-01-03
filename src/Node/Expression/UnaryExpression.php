@@ -6,39 +6,39 @@ use EsprimaPhp\Parser;
 
 class UnaryExpression extends Expression
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::UNARY_EXPRESSION;
+    /**
+     * @var string
+     */
+    public $type = Syntax::UNARY_EXPRESSION;
 
-	/**
-	 * @var UnaryOperator
-	 */
-	public $operator;
+    /**
+     * @var UnaryOperator
+     */
+    public $operator;
 
-	/**
-	 * @var Expression
-	 */
-	public $argument;
+    /**
+     * @var Expression
+     */
+    public $argument;
 
-	/**
-	 * @var
-	 */
-	public $prefix;
+    /**
+     * @var
+     */
+    public $prefix;
 
-	/**
-	 * @param Parser $esprima
-	 * @param UnaryOperator $operator
-	 * @param Expression $argument
-	 *
-	 * @return UnaryExpression
-	 */
-	public function finish($esprima, $operator, $argument)
-	{
-		$this->operator = $operator;
-		$this->argument = $argument;
-		$this->prefix = true;
-		return $this->finishNode($esprima);
-	}
+    /**
+     * @param Parser        $esprima
+     * @param UnaryOperator $operator
+     * @param Expression    $argument
+     *
+     * @return UnaryExpression
+     */
+    public function finish($esprima, $operator, $argument)
+    {
+        $this->operator = $operator;
+        $this->argument = $argument;
+        $this->prefix = true;
+        return $this->finishNode($esprima);
+    }
 
 } 

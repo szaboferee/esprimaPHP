@@ -9,15 +9,15 @@ use EsprimaPhp\Parser\Syntax;
  */
 class ConditionalExpression extends Expression
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::CONDITIONAL_EXPRESSION;
+    /**
+     * @var string
+     */
+    public $type = Syntax::CONDITIONAL_EXPRESSION;
 
-	/**
-	 * @var Expression
-	 */
-	public $test;
+    /**
+     * @var Expression
+     */
+    public $test;
 
     /**
      * @var Expression
@@ -25,26 +25,26 @@ class ConditionalExpression extends Expression
     public $consequent;
 
     /**
-	 * @var Expression
-	 */
-	public $alternate;
+     * @var Expression
+     */
+    public $alternate;
 
 
-	/**
-	 * @param EsprimaPHP $esprima
-	 * @param Expression $test
-	 * @param Expression $consequent
-	 * @param Expression $alternate
-	 *
-	 * @return ConditionalExpression
-	 */
-	public function finish($esprima, $test, $consequent, $alternate)
-	{
-		$this->test = $test;
-		$this->alternate = $alternate;
-		$this->consequent = $consequent;
+    /**
+     * @param EsprimaPHP $esprima
+     * @param Expression $test
+     * @param Expression $consequent
+     * @param Expression $alternate
+     *
+     * @return ConditionalExpression
+     */
+    public function finish($esprima, $test, $consequent, $alternate)
+    {
+        $this->test = $test;
+        $this->alternate = $alternate;
+        $this->consequent = $consequent;
 
-		return $this->finishNode($esprima);
-	}
+        return $this->finishNode($esprima);
+    }
 
 } 

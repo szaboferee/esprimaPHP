@@ -10,27 +10,28 @@ namespace EsprimaPhp;
 
 use EsprimaPhp\Node\Expression\Literal;
 
-class RegexLiteral extends Literal{
-	public $literal;
+class RegexLiteral extends Literal
+{
+    public $literal;
 
-	public $value;
+    public $value;
 
-	/**
-	 * @var Regex
-	 */
-	public $regex;
+    /**
+     * @var Regex
+     */
+    public $regex;
 
-	public $start;
+    public $start;
 
-	public $end;
+    public $end;
 
-	function __construct($literal, $value, $regex = null, $start = null, $end = null)
-	{
-		$this->literal = $literal;
-		$this->value = $value;
-		$this->regex = $regex;
-		$this->start = $start;
-		$this->end = $end;
-	}
+    function __construct($literal, $value, $regex = null, $start = null, $end = null)
+    {
+        $this->literal = $literal;
+        $this->value = $value;
+        $this->regex = $regex;
+        $this->start = $start;
+        $this->end = $end;
+    }
 
 } 

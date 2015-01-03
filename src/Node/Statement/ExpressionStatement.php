@@ -6,19 +6,19 @@ use EsprimaPhp\Parser\Syntax;
 
 class ExpressionStatement extends Statement
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::EXPRESSION_STATEMENT;
-	/**
-	 * @var Expression
-	 */
-	public $expression;
+    /**
+     * @var string
+     */
+    public $type = Syntax::EXPRESSION_STATEMENT;
+    /**
+     * @var Expression
+     */
+    public $expression;
 
-	public function finish($esprima, $expression)
-	{
-		$this->expression = $expression;
-		return $this->finishNode($esprima);
-	}
+    public function finish($esprima, $expression)
+    {
+        $this->expression = $expression;
+        return $this->finishNode($esprima);
+    }
 
 } 

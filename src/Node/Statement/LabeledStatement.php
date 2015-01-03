@@ -6,24 +6,24 @@ use EsprimaPhp\Parser\Syntax;
 
 class LabeledStatement extends Statement
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::LABELED_STATEMENT;
-	/**
-	 * @var Identifier
-	 */
-	public $label;
-	/**
-	 * @var Statement
-	 */
-	public $body;
+    /**
+     * @var string
+     */
+    public $type = Syntax::LABELED_STATEMENT;
+    /**
+     * @var Identifier
+     */
+    public $label;
+    /**
+     * @var Statement
+     */
+    public $body;
 
-	function finish($esprima, $label, $body)
-	{
-		$this->label = $label;
-		$this->body = $body;
-		return $this->finishNode($esprima);
-	}
+    function finish($esprima, $label, $body)
+    {
+        $this->label = $label;
+        $this->body = $body;
+        return $this->finishNode($esprima);
+    }
 
 } 

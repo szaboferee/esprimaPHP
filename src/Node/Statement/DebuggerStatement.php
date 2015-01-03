@@ -7,12 +7,12 @@ use EsprimaPhp\Parser;
 
 class DebuggerStatement extends Statement
 {
-	public $type = Syntax::DEBUGGER_STATEMENT;
+    public $type = Syntax::DEBUGGER_STATEMENT;
 
-	public function finish($esprima)
-	{
-		return parent::finishNode($esprima);
-	}
+    public function finish($esprima)
+    {
+        return parent::finishNode($esprima);
+    }
 
 
 } 

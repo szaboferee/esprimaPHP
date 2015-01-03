@@ -8,25 +8,25 @@ use EsprimaPhp\Parser\Syntax;
  */
 class BreakStatement extends Statement
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::BREAK_STATEMENT;
-	/**
-	 * @var Identifier
-	 */
-	public $label;
+    /**
+     * @var string
+     */
+    public $type = Syntax::BREAK_STATEMENT;
+    /**
+     * @var Identifier
+     */
+    public $label;
 
-	/**
-	 * @param EsprimaPHP $esprima
-	 * @param $label
-	 *
-	 * @return BreakStatement
-	 */
-	function finish($esprima, $label)
-	{
-		$this->label = $label;
-		return $this->finishNode($esprima);
-	}
+    /**
+     * @param EsprimaPHP $esprima
+     * @param $label
+     *
+     * @return BreakStatement
+     */
+    function finish($esprima, $label)
+    {
+        $this->label = $label;
+        return $this->finishNode($esprima);
+    }
 
 } 

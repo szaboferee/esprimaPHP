@@ -6,8 +6,8 @@ use EsprimaPhp\Parser;
 
 class UpdateExpression extends UnaryExpression
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::UPDATE_EXPRESSION;
+    /**
+     * @var string
+     */
+    public $type = Syntax::UPDATE_EXPRESSION;
 }

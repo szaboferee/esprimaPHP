@@ -7,31 +7,31 @@ use EsprimaPhp\Parser\Syntax;
 
 class VariableDeclarator extends Node
 {
-	/**
-	 * @var string
-	 */
-	public $type = Syntax::VARIABLE_DECLARATOR;
-	/**
-	 * @var Pattern
-	 */
-	public $id;
-	/**
-	 * @var Expression|null
-	 */
-	public $init;
+    /**
+     * @var string
+     */
+    public $type = Syntax::VARIABLE_DECLARATOR;
+    /**
+     * @var Pattern
+     */
+    public $id;
+    /**
+     * @var Expression|null
+     */
+    public $init;
 
-	/**
-	 * @param $esprima
-	 * @param $id
-	 * @param $init
-	 *
-	 * @return $this
-	 */
-	public function finish($esprima, $id, $init)
-	{
-		$this->id = $id;
-		$this->init = $init;
-		return $this->finishNode($esprima);
-	}
+    /**
+     * @param $esprima
+     * @param $id
+     * @param $init
+     *
+     * @return $this
+     */
+    public function finish($esprima, $id, $init)
+    {
+        $this->id = $id;
+        $this->init = $init;
+        return $this->finishNode($esprima);
+    }
 
 } 
