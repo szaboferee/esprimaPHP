@@ -1,11 +1,10 @@
 <?php
+
 namespace EsprimaPhp\Parser;
 
 use EsprimaPhp\Parser;
 use EsprimaPhp\Util\ArrayList;
 use JsonSerializable;
-use RecursiveIterator;
-use RecursiveIteratorIterator;
 
 class Node implements JsonSerializable, \Iterator, \RecursiveIterator
 {
@@ -25,7 +24,7 @@ class Node implements JsonSerializable, \Iterator, \RecursiveIterator
 
     function __construct($esprima, $startToken = null)
     {
-        if($startToken) {
+        if ($startToken) {
             $this->wrappingNode($esprima, $startToken);
         } else {
             $this->node($esprima);
@@ -33,7 +32,67 @@ class Node implements JsonSerializable, \Iterator, \RecursiveIterator
 
     }
 
-    public function processComment ($esprima) 
+    /**
+     * @param $esprima
+     * @param $startToken
+     */
+    protected function wrappingNode($esprima, $startToken)
+    {
+        if ($esprima->extra->range) {
+            // start not always set
+            $this->range = [property_exists($startToken, 'start') ? $startToken->start : 0, 0];
+        }
+        if ($esprima->extra->loc) {
+            $this->loc = SourceLocation::createFromParser($esprima, $startToken);
+        }
+    }
+
+    /**
+     * @param Parser $esprima
+     */
+    protected function node($esprima)
+    {
+        $esprima->index = $esprima->lookahead->start;
+        if ($esprima->lookahead->type === Token::STRING_LITERAL) {
+            $esprima->lineNumber = $esprima->lookahead->startLineNumber;
+            $esprima->lineStart = $esprima->lookahead->startLineStart;
+        } else {
+            $esprima->lineNumber = $esprima->lookahead->lineNumber;
+            $esprima->lineStart = $esprima->lookahead->lineStart;
+        }
+        if ($esprima->extra->range) {
+            $this->range = [$esprima->index, 0];
+        }
+        if ($esprima->extra->loc) {
+            $this->loc = SourceLocation::createFromParser($esprima);
+        }
+    }
+
+    /**
+     * @param Parser $esprima
+     *
+     * @return Node
+     */
+    public function finishNode($esprima)
+    {
+        if ($esprima->extra->range) {
+            $this->range[1] = $esprima->index;
+        }
+        if ($esprima->extra->loc) {
+            $this->loc->end = Position::createFromParser($esprima);
+            if ($esprima->extra->source) {
+                $this->loc->source = $esprima->extra->source;
+            }
+        }
+
+        if ($esprima->extra->attachComment) {
+            $this->processComment($esprima);
+        }
+
+        return $this;
+    }
+
+    public function processComment($esprima)
     {
         $lastChild = null;
         $trailingComments = null;
@@ -87,67 +146,6 @@ class Node implements JsonSerializable, \Iterator, \RecursiveIterator
     }
 
     /**
-     * @param Parser $esprima
-     *
-     * @return Node
-     */
-    public function finishNode($esprima) 
-    {
-        if ($esprima->extra->range) {
-            $this->range[1] = $esprima->index;
-        }
-        if ($esprima->extra->loc) {
-            $this->loc->end = Position::createFromParser($esprima);
-            if ($esprima->extra->source) {
-                $this->loc->source = $esprima->extra->source;
-            }
-        }
-
-        if ($esprima->extra->attachComment) {
-            $this->processComment($esprima);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param $esprima
-     * @param $startToken
-     */
-    protected function wrappingNode($esprima, $startToken)
-    {
-        if ($esprima->extra->range) {
-            // start not always set
-            $this->range = [property_exists($startToken, 'start') ? $startToken->start : 0, 0];
-        }
-        if ($esprima->extra->loc) {
-            $this->loc = SourceLocation::createFromParser($esprima, $startToken);
-        }
-    }
-
-    /**
-     * @param Parser $esprima
-     */
-    protected function node($esprima)
-    {
-        $esprima->index = $esprima->lookahead->start;
-        if ($esprima->lookahead->type === Token::STRING_LITERAL) {
-            $esprima->lineNumber = $esprima->lookahead->startLineNumber;
-            $esprima->lineStart = $esprima->lookahead->startLineStart;
-        } else {
-            $esprima->lineNumber = $esprima->lookahead->lineNumber;
-            $esprima->lineStart = $esprima->lookahead->lineStart;
-        }
-        if ($esprima->extra->range) {
-            $this->range = [$esprima->index, 0];
-        }
-        if ($esprima->extra->loc) {
-            $this->loc = SourceLocation::createFromParser($esprima);
-        }
-    }
-
-
-    /**
      * (PHP 5 &gt;= 5.4.0)<br/>
      * Specify data which should be serialized to JSON
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -159,24 +157,13 @@ class Node implements JsonSerializable, \Iterator, \RecursiveIterator
         $object = get_object_vars($this);
 
         $ret = array();
-        foreach($object as $key => $value) {
-            if($value !== null || !property_exists('\EsprimaPhp\Parser\Node', $key)) {
+        foreach ($object as $key => $value) {
+            if ($value !== null || !property_exists('\EsprimaPhp\Parser\Node', $key)) {
                 $ret[$key] = $value;
             }
         }
 
-        return (object) $ret;
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Return the current element
-     * @link http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     */
-    public function current()
-    {
-        return $this->{current($this->keys)};
+        return (object)$ret;
     }
 
     /**
@@ -234,6 +221,17 @@ class Node implements JsonSerializable, \Iterator, \RecursiveIterator
     {
         $current = $this->current();
         return $current instanceof ArrayList || $current instanceof Node;
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Return the current element
+     * @link http://php.net/manual/en/iterator.current.php
+     * @return mixed Can return any type.
+     */
+    public function current()
+    {
+        return $this->{current($this->keys)};
     }
 
     /**

@@ -3,9 +3,9 @@
 namespace EsprimaPhp\Node;
 
 use EsprimaPhp\Node\Expression\Literal;
+use EsprimaPhp\Parser;
 use EsprimaPhp\Parser\Node;
 use EsprimaPhp\Parser\Syntax;
-use EsprimaPhp\Parser;
 
 class Property extends Node
 {
@@ -30,10 +30,10 @@ class Property extends Node
     public $kind;
 
     /**
-     * @param Parser             $esprima
-     * @param string             $kind
+     * @param Parser $esprima
+     * @param string $kind
      * @param Literal|Identifier $key
-     * @param Expression         $value
+     * @param Expression $value
      *
      * @return Property
      */

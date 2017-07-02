@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node\Statement;
 
 use EsprimaPhp\Node\Statement;
@@ -16,10 +17,10 @@ class ReturnStatement extends Statement
     public $argument;
 
     /**
-     * @param EsprimaPHP      $esprima
+     * @param EsprimaPHP $esprima
      * @param Expression|null $argument
      */
-    public function finish($esprima, $argument = null) 
+    public function finish($esprima, $argument = null)
     {
         $this->argument = $argument;
 

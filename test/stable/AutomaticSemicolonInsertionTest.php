@@ -1,11 +1,11 @@
-<?php 
+<?php
 
- namespace test;
- class AutomaticSemicolonInsertionTest extends BaseTestCase
- {
-protected function getFixtures()
+namespace test;
+class AutomaticSemicolonInsertionTest extends BaseTestCase
 {
-	return json_decode('
+    protected function getFixtures()
+    {
+        return json_decode('
 {"{ x
 ++y }":{"type":"BlockStatement","body":[{"type":"ExpressionStatement","expression":{"type":"Identifier","name":"x","range":[2,3],"loc":{"start":{"line":1,"column":2},"end":{"line":1,"column":3}}},"range":[2,4],"loc":{"start":{"line":1,"column":2},"end":{"line":2,"column":0}}},{"type":"ExpressionStatement","expression":{"type":"UpdateExpression","operator":"++","argument":{"type":"Identifier","name":"y","range":[6,7],"loc":{"start":{"line":2,"column":2},"end":{"line":2,"column":3}}},"prefix":true,"range":[4,7],"loc":{"start":{"line":2,"column":0},"end":{"line":2,"column":3}}},"range":[4,8],"loc":{"start":{"line":2,"column":0},"end":{"line":2,"column":4}}}],"range":[0,9],"loc":{"start":{"line":1,"column":0},"end":{"line":2,"column":5}}},"{ x
 --y }":{"type":"BlockStatement","body":[{"type":"ExpressionStatement","expression":{"type":"Identifier","name":"x","range":[2,3],"loc":{"start":{"line":1,"column":2},"end":{"line":1,"column":3}}},"range":[2,4],"loc":{"start":{"line":1,"column":2},"end":{"line":2,"column":0}}},{"type":"ExpressionStatement","expression":{"type":"UpdateExpression","operator":"--","argument":{"type":"Identifier","name":"y","range":[6,7],"loc":{"start":{"line":2,"column":2},"end":{"line":2,"column":3}}},"prefix":true,"range":[4,7],"loc":{"start":{"line":2,"column":0},"end":{"line":2,"column":3}}},"range":[4,8],"loc":{"start":{"line":2,"column":0},"end":{"line":2,"column":4}}}],"range":[0,9],"loc":{"start":{"line":1,"column":0},"end":{"line":2,"column":5}}},"var x /* comment */;":{"type":"VariableDeclaration","declarations":[{"type":"VariableDeclarator","id":{"type":"Identifier","name":"x","range":[4,5],"loc":{"start":{"line":1,"column":4},"end":{"line":1,"column":5}}},"init":null,"range":[4,5],"loc":{"start":{"line":1,"column":4},"end":{"line":1,"column":5}}}],"kind":"var","range":[0,20],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":20}}},"{ var x = 14, y = 3
@@ -22,5 +22,5 @@ Comment */x; })":{"type":"ExpressionStatement","expression":{"type":"FunctionExp
 error; }":{"type":"BlockStatement","body":[{"type":"ThrowStatement","argument":{"type":"Identifier","name":"error","range":[8,13],"loc":{"start":{"line":1,"column":8},"end":{"line":1,"column":13}}},"range":[2,14],"loc":{"start":{"line":1,"column":2},"end":{"line":2,"column":0}}},{"type":"ExpressionStatement","expression":{"type":"Identifier","name":"error","range":[14,19],"loc":{"start":{"line":2,"column":0},"end":{"line":2,"column":5}}},"range":[14,20],"loc":{"start":{"line":2,"column":0},"end":{"line":2,"column":6}}}],"range":[0,22],"loc":{"start":{"line":1,"column":0},"end":{"line":2,"column":8}}},"{ throw error// Comment
 error; }":{"type":"BlockStatement","body":[{"type":"ThrowStatement","argument":{"type":"Identifier","name":"error","range":[8,13],"loc":{"start":{"line":1,"column":8},"end":{"line":1,"column":13}}},"range":[2,24],"loc":{"start":{"line":1,"column":2},"end":{"line":2,"column":0}}},{"type":"ExpressionStatement","expression":{"type":"Identifier","name":"error","range":[24,29],"loc":{"start":{"line":2,"column":0},"end":{"line":2,"column":5}}},"range":[24,30],"loc":{"start":{"line":2,"column":0},"end":{"line":2,"column":6}}}],"range":[0,32],"loc":{"start":{"line":1,"column":0},"end":{"line":2,"column":8}}},"{ throw error/* Multiline
 Comment */error; }":{"type":"BlockStatement","body":[{"type":"ThrowStatement","argument":{"type":"Identifier","name":"error","range":[8,13],"loc":{"start":{"line":1,"column":8},"end":{"line":1,"column":13}}},"range":[2,36],"loc":{"start":{"line":1,"column":2},"end":{"line":2,"column":10}}},{"type":"ExpressionStatement","expression":{"type":"Identifier","name":"error","range":[36,41],"loc":{"start":{"line":2,"column":10},"end":{"line":2,"column":15}}},"range":[36,42],"loc":{"start":{"line":2,"column":10},"end":{"line":2,"column":16}}}],"range":[0,44],"loc":{"start":{"line":1,"column":0},"end":{"line":2,"column":18}}}}');
-}
+    }
 }

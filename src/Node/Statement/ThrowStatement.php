@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node\Statement;
 
 use EsprimaPhp\Node\Statement;
@@ -19,7 +20,7 @@ class ThrowStatement extends Statement
      * @param EsprimaPHP $esprima
      * @param Expression $argument
      */
-    public function finish($esprima, $argument) 
+    public function finish($esprima, $argument)
     {
         $this->argument = $argument;
 

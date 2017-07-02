@@ -16,7 +16,7 @@ class MutableNode
     }
 
     /**
-     * @param string             $nodeClass
+     * @param string $nodeClass
      * @param \EsprimaPhp\Parser $esprima
      *
      * @return Node

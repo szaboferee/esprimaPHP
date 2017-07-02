@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node\Statement;
 
 use EsprimaPhp\Node\Statement;
@@ -22,7 +23,7 @@ class WhileStatement extends Statement
     /**
      * @param EsprimaPHP $esprima
      * @param Expression $test
-     * @param Statement  $body
+     * @param Statement $body
      */
     public function finish($esprima, $test, $body)
     {

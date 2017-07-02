@@ -1,5 +1,7 @@
 <?php
+
 namespace EsprimaPhp\Node\Expression;
+
 use EsprimaPhp\Node\Expression;
 use EsprimaPhp\Parser\Syntax;
 
@@ -46,11 +48,11 @@ class ArrowFunctionExpression extends Expression
     public $expression;
 
     /**
-     * @param EsprimaPHP                 $esprima
-     * @param ArrayList                  $params
-     * @param ArrayList                  $defaults
+     * @param EsprimaPHP $esprima
+     * @param ArrayList $params
+     * @param ArrayList $defaults
      * @param BlockStatement| Expression $body
-     * @param ArrayList                  $expression
+     * @param ArrayList $expression
      *
      * @return ArrowFunctionExpression
      */

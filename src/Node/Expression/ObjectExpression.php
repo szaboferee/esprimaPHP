@@ -1,8 +1,10 @@
 <?php
+
 namespace EsprimaPhp\Node\Expression;
+
 use EsprimaPhp\Node\Expression;
-use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Parser;
+use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Util\ArrayList;
 
 /**
@@ -21,7 +23,7 @@ class ObjectExpression extends Expression
     public $properties;
 
     /**
-     * @param Parser    $esprima
+     * @param Parser $esprima
      * @param ArrayList $properties
      *
      * @return ObjectExpression

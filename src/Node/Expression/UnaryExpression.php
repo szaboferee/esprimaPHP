@@ -1,8 +1,10 @@
 <?php
+
 namespace EsprimaPhp\Node\Expression;
+
 use EsprimaPhp\Node\Expression;
-use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Parser;
+use EsprimaPhp\Parser\Syntax;
 
 class UnaryExpression extends Expression
 {
@@ -27,9 +29,9 @@ class UnaryExpression extends Expression
     public $prefix;
 
     /**
-     * @param Parser        $esprima
+     * @param Parser $esprima
      * @param UnaryOperator $operator
-     * @param Expression    $argument
+     * @param Expression $argument
      *
      * @return UnaryExpression
      */

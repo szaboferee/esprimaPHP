@@ -1,11 +1,11 @@
-<?php 
+<?php
 
- namespace test;
- class TokenizeTest extends BaseTestCase 
- {
-protected function getFixtures()
+namespace test;
+class TokenizeTest extends BaseTestCase
 {
-	return json_decode('{
+    protected function getFixtures()
+    {
+        return json_decode('{
 	"tokenize(/42/)":[{"type":"Identifier","value":"tokenize","range":[0,8],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":8}}},{"type":"Punctuator","value":"(","range":[8,9],"loc":{"start":{"line":1,"column":8},"end":{"line":1,"column":9}}},{"type":"RegularExpression","value":"/42/","regex":{"pattern":"42","flags":""},"range":[9,13],"loc":{"start":{"line":1,"column":9},"end":{"line":1,"column":13}}},{"type":"Punctuator","value":")","range":[13,14],"loc":{"start":{"line":1,"column":13},"end":{"line":1,"column":14}}}],
 	"if (false) { /42/ }":[{"type":"Keyword","value":"if","range":[0,2],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":2}}},{"type":"Punctuator","value":"(","range":[3,4],"loc":{"start":{"line":1,"column":3},"end":{"line":1,"column":4}}},{"type":"Boolean","value":"false","range":[4,9],"loc":{"start":{"line":1,"column":4},"end":{"line":1,"column":9}}},{"type":"Punctuator","value":")","range":[9,10],"loc":{"start":{"line":1,"column":9},"end":{"line":1,"column":10}}},{"type":"Punctuator","value":"{","range":[11,12],"loc":{"start":{"line":1,"column":11},"end":{"line":1,"column":12}}},{"type":"RegularExpression","value":"/42/","regex":{"pattern":"42","flags":""},"range":[13,17],"loc":{"start":{"line":1,"column":13},"end":{"line":1,"column":17}}},{"type":"Punctuator","value":"}","range":[18,19],"loc":{"start":{"line":1,"column":18},"end":{"line":1,"column":19}}}],
 	"with (false) /42/":[{"type":"Keyword","value":"with","range":[0,4],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":4}}},{"type":"Punctuator","value":"(","range":[5,6],"loc":{"start":{"line":1,"column":5},"end":{"line":1,"column":6}}},{"type":"Boolean","value":"false","range":[6,11],"loc":{"start":{"line":1,"column":6},"end":{"line":1,"column":11}}},{"type":"Punctuator","value":")","range":[11,12],"loc":{"start":{"line":1,"column":11},"end":{"line":1,"column":12}}},{"type":"RegularExpression","value":"/42/","regex":{"pattern":"42","flags":""},"range":[13,17],"loc":{"start":{"line":1,"column":13},"end":{"line":1,"column":17}}}],
@@ -21,5 +21,5 @@ protected function getFixtures()
 	"/42":{"tokenize":true,"index":3,"lineNumber":1,"column":4,"message":"Error: Line 1: Invalid regular expression: missing /"},
 	"foo[/42":{"tokenize":true,"index":7,"lineNumber":1,"column":8,"message":"Error: Line 1: Invalid regular expression: missing /"}
 	}');
-}
+    }
 }

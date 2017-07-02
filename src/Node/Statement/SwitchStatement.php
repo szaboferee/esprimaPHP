@@ -21,11 +21,11 @@ class SwitchStatement extends Statement
     public $cases;
 
     /**
-     * @param EsprimaPHP   $esprima
-     * @param Expression   $discriminant
+     * @param EsprimaPHP $esprima
+     * @param Expression $discriminant
      * @param SwitchCase[] $cases
      */
-    public function finish($esprima, $discriminant, $cases) 
+    public function finish($esprima, $discriminant, $cases)
     {
         $this->discriminant = $discriminant;
         $this->cases = $cases;

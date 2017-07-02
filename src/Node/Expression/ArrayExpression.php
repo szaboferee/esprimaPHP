@@ -1,5 +1,7 @@
 <?php
+
 namespace EsprimaPhp\Node\Expression;
+
 use EsprimaPhp\Node\Expression;
 use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Util\ArrayList;
@@ -21,7 +23,7 @@ class ArrayExpression extends Expression
 
     /**
      * @param \EsprimaPhp\Parser $esprima
-     * @param ArrayList          $elements
+     * @param ArrayList $elements
      *
      * @return ArrayExpression
      */

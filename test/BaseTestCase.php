@@ -16,76 +16,42 @@ ini_set('display_errors', 'on');
 
 abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
-	abstract protected function getFixtures();
+    /**
+     * @var Parser
+     */
+    protected $esprima;
 
-	/**
-	 * @var Parser
-	 */
-	protected $esprima;
-
-	protected function setUp()
-	{
-		$this->esprima = new Parser();
-	}
-
-
-	/**
-	 * @param $code
-	 * @param $expectedTree
-	 * @dataProvider getTestFixtures
-	 */
-	public function testFixture($code, $expectedTree) {
-
-        if ($code == '_empty_') $code = "";
-
-		if (is_object($expectedTree) && property_exists($expectedTree, 'lineNumber')) {
-			$this->_testError($code, $expectedTree);
-		} else if (is_object($expectedTree) && property_exists($expectedTree, 'result')) {
-			$this->_testAPI($code, $expectedTree);
-		} else if (is_array($expectedTree)) {
-			$this->_testTokenize($code, $expectedTree);
-		} else {
-			$this->_testParse($code, $expectedTree);
-		}
-	}
-
-	public function getTestFixtures() {
-		$ret = array();
-
-		$fixtures = $this->getFixtures();
-		if($fixtures == null || !count($fixtures)) {
-			$fixtures = array("", null);;
-		}
-		foreach($fixtures as $code => $expectedTree) {
-			$ret[$code] = array($code, $expectedTree);
-		}
-
-		return $ret;
-	}
-
-	private function hasAttachedComment($syntax)
+    /**
+     * @param $code
+     * @param $expectedTree
+     * @dataProvider getTestFixtures
+     */
+    public function testFixture($code, $expectedTree)
     {
-	    foreach ((is_array($syntax) ? $syntax: get_object_vars($syntax)) as $key => $value) {
-		if ($key === 'leadingComments' || $key === 'trailingComments') {
-			return true;
-		}
-		if (is_object($value) || is_array($value)) {
-			if ($this->hasAttachedComment($value)) {
-				return true;
-			}
-       }
-    }
-	return false;
-}
 
-	private function _testError($code, $exception)
+        if ($code == '_empty_') {
+            $code = "";
+        }
+
+        if (is_object($expectedTree) && property_exists($expectedTree, 'lineNumber')) {
+            $this->_testError($code, $expectedTree);
+        } else if (is_object($expectedTree) && property_exists($expectedTree, 'result')) {
+            $this->_testAPI($code, $expectedTree);
+        } else if (is_array($expectedTree)) {
+            $this->_testTokenize($code, $expectedTree);
+        } else {
+            $this->_testParse($code, $expectedTree);
+        }
+    }
+
+    private function _testError($code, $exception)
     {
         // Different parsing options should give the same error.
         $options = [
             [],
-            [ 'comment' => true ],
-            [ 'raw' => true ],
-            [ 'raw' => true, 'comment' => true ],
+            ['comment' => true],
+            ['raw' => true],
+            ['raw' => true, 'comment' => true],
         ];
         $tokenize = false;
         $actual = 'no error';
@@ -99,7 +65,7 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
         $expected = json_encode($exception);
         $expected = $exception;
 
-        foreach($options as $option) {
+        foreach ($options as $option) {
 
             try {
                 if ($tokenize) {
@@ -115,10 +81,21 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
             $this->assertEquals($expected, $actual);
 
         }
-	}
+    }
 
-	private function _testAPI($code, $expectedTree)
-	{
+    private function errorToObject(Error $e)
+    {
+        return (object)[
+            'index' => $e->index,
+            'lineNumber' => $e->lineNumber,
+            'column' => $e->column,
+            'message' => $e->message,
+            'description' => $e->description,
+        ];
+    }
+
+    private function _testAPI($code, $expectedTree)
+    {
         try {
             $actualTree = call_user_func_array(array($this->esprima, $expectedTree->call), $expectedTree->args);
         } catch (Error $e) {
@@ -129,10 +106,10 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
         $actualTree = json_encode($actualTree);
 
         /**
-        echo "\nC: " . $code. "\n";
-        echo "\nE: " . json_encode($expectedTree). "\n";
-        echo "\nA: " . $actualTree. "\n";
-        /**/
+         * echo "\nC: " . $code. "\n";
+         * echo "\nE: " . json_encode($expectedTree). "\n";
+         * echo "\nA: " . $actualTree. "\n";
+         * /**/
         //$actualTree = json_decode($actualTree);
         $expectedTree = json_encode($expectedTree);
 
@@ -140,10 +117,10 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedTree, $actualTree);
 
 
-	}
+    }
 
-	private function _testTokenize($code, $expectedTree)
-	{
+    private function _testTokenize($code, $expectedTree)
+    {
         $options = [
             'comment' => true,
             'tolerant' => true,
@@ -161,83 +138,109 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
         $actualTree = json_encode($actualTree);
 
         /**
-        echo "\nC: " . $code. "\n";
-        echo "\nE: " . json_encode($expectedTree). "\n";
-        echo "\nA: " . $actualTree. "\n";
-        /**/
+         * echo "\nC: " . $code. "\n";
+         * echo "\nE: " . json_encode($expectedTree). "\n";
+         * echo "\nA: " . $actualTree. "\n";
+         * /**/
         $actualTree = json_decode($actualTree);
         //$expectedTree = json_encode($expectedTree);
 
 
         $this->assertEquals($expectedTree, $actualTree);
-	}
+    }
 
-	private function _testParse($code, $expectedTree)
-	{
-		$pretty = JSON_PRETTY_PRINT;
-		$debug = 0;
+    private function _testParse($code, $expectedTree)
+    {
+        $pretty = JSON_PRETTY_PRINT;
+        $debug = 0;
 
-        if(!is_object($expectedTree)) {
+        if (!is_object($expectedTree)) {
             $this->markTestIncomplete("invalid json");
         }
 
-		$options = [
-			'comment' => property_exists($expectedTree, 'comments'),
-			'range' => true,
-			'loc' => true,
-			'tokens' => property_exists($expectedTree, 'tokens'),
-			'raw' => true,
-			'tolerant' => property_exists($expectedTree, 'errors'),
-			'source' => null,
-			'attachComment' => $this->hasAttachedComment($expectedTree)
-		];
+        $options = [
+            'comment' => property_exists($expectedTree, 'comments'),
+            'range' => true,
+            'loc' => true,
+            'tokens' => property_exists($expectedTree, 'tokens'),
+            'raw' => true,
+            'tolerant' => property_exists($expectedTree, 'errors'),
+            'source' => null,
+            'attachComment' => $this->hasAttachedComment($expectedTree)
+        ];
 
-		if (property_exists($expectedTree, 'tokens') && count($expectedTree->tokens)) {
-			$options['range'] = property_exists($expectedTree->tokens[0], 'range');
-			$options['loc'] = property_exists($expectedTree->tokens[0], 'loc');
-		}
-		if (property_exists($expectedTree, 'comments') && count($expectedTree->comments)) {
-			$options['range'] = property_exists($expectedTree->comments[0], 'range');
-			$options['loc'] = property_exists($expectedTree->comments[0], 'loc');
-		}
+        if (property_exists($expectedTree, 'tokens') && count($expectedTree->tokens)) {
+            $options['range'] = property_exists($expectedTree->tokens[0], 'range');
+            $options['loc'] = property_exists($expectedTree->tokens[0], 'loc');
+        }
+        if (property_exists($expectedTree, 'comments') && count($expectedTree->comments)) {
+            $options['range'] = property_exists($expectedTree->comments[0], 'range');
+            $options['loc'] = property_exists($expectedTree->comments[0], 'loc');
+        }
 
-		if ($options['loc']) {
-			$options['source'] = isset($expectedTree->loc->source) ? $expectedTree->loc->source : null;
-		}
+        if ($options['loc']) {
+            $options['source'] = isset($expectedTree->loc->source) ? $expectedTree->loc->source : null;
+        }
 
-		if($debug) {
+        if ($debug) {
 
-			echo "\nO: " . json_encode($options). "\n";
-			echo "\nC: " . $code. "\n";
-			echo "\nE: " . json_encode($expectedTree). "\n";
-		}
-		try {
-			$actualTree = $this->esprima->parse($code, $options);
-		} catch (Error $e) {
-			$this->fail('Parsing failed:' . $e);
-		}
+            echo "\nO: " . json_encode($options) . "\n";
+            echo "\nC: " . $code . "\n";
+            echo "\nE: " . json_encode($expectedTree) . "\n";
+        }
+        try {
+            $actualTree = $this->esprima->parse($code, $options);
+        } catch (Error $e) {
+            $this->fail('Parsing failed:' . $e);
+        }
 
-		$actualTree = ($options['comment'] || $options['tokens'] || $options['tolerant'])
-			? $actualTree
-			: (isset($actualTree->body[0]) ? $actualTree->body[0] : null);
+        $actualTree = ($options['comment'] || $options['tokens'] || $options['tolerant'])
+            ? $actualTree
+            : (isset($actualTree->body[0]) ? $actualTree->body[0] : null);
 
         $actualTree = json_encode($actualTree);
-		if($debug) echo "\nA: " . $actualTree. "\n";
+        if ($debug) echo "\nA: " . $actualTree . "\n";
         $actualTree = json_decode($actualTree);
 
 
-		$this->assertEquals($expectedTree, $actualTree);
+        $this->assertEquals($expectedTree, $actualTree);
 
-	}
+    }
 
-    private function errorToObject(Error $e)
+    private function hasAttachedComment($syntax)
     {
-        return (object) [
-            'index' => $e->index,
-            'lineNumber' => $e->lineNumber,
-            'column' => $e->column,
-            'message' => $e->message,
-            'description' => $e->description,
-        ];
+        foreach ((is_array($syntax) ? $syntax : get_object_vars($syntax)) as $key => $value) {
+            if ($key === 'leadingComments' || $key === 'trailingComments') {
+                return true;
+            }
+            if (is_object($value) || is_array($value)) {
+                if ($this->hasAttachedComment($value)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function getTestFixtures()
+    {
+        $ret = array();
+
+        $fixtures = $this->getFixtures();
+        if ($fixtures == null || !count($fixtures)) {
+            $fixtures = array("", null);
+        }
+        foreach ($fixtures as $code => $expectedTree) {
+            $ret[$code] = array($code, $expectedTree);
+        }
+
+        return $ret;
+    }
+
+    abstract protected function getFixtures();
+
+    protected function setUp()
+    {
+        $this->esprima = new Parser();
     }
 }

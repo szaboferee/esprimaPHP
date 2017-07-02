@@ -8,21 +8,24 @@ use JsonSerializable;
 class SourceString implements ArrayAccess, JsonSerializable
 {
     private $string = '';
-    public function __construct($string) 
+
+    public function __construct($string)
     {
-        if(is_bool($string)) {
+        if (is_bool($string)) {
             $this->string = $string ? 'true' : 'false';
-        } else if(is_null($string)) {
+        } else if (is_null($string)) {
             $this->string = 'null';
         } else {
-            $this->string = (string) $string;
+            $this->string = (string)$string;
         }
     }
-    public function __toString() 
+
+    public function __toString()
     {
         return $this->string;
     }
-    public function charCodeAt($index) 
+
+    public function charCodeAt($index)
     {
         $char = mb_substr($this->string, $index, 1, 'UTF-8');
 
@@ -33,6 +36,7 @@ class SourceString implements ArrayAccess, JsonSerializable
             return null;
         }
     }
+
     public function slice($start, $end)
     {
         $end = $end - $start;
@@ -41,7 +45,8 @@ class SourceString implements ArrayAccess, JsonSerializable
 
     public function offsetGet($offset)
     {
-        if(!$this->offsetExists($offset)) { return null; 
+        if (!$this->offsetExists($offset)) {
+            return null;
         }
         return new SourceString($this->string[$offset]);
     }
@@ -51,9 +56,15 @@ class SourceString implements ArrayAccess, JsonSerializable
         return $this->length() > $offset;
     }
 
+    public function length()
+    {
+        return mb_strlen($this->string);
+    }
+
     public function offsetSet($offset, $value)
     {
     }
+
     public function offsetUnset($offset)
     {
     }
@@ -61,10 +72,5 @@ class SourceString implements ArrayAccess, JsonSerializable
     public function jsonSerialize()
     {
         return $this->string;
-    }
-
-    public function length() 
-    {
-        return mb_strlen($this->string);
     }
 }

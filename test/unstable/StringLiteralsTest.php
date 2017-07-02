@@ -11,9 +11,9 @@ namespace test;
 
 class StringLiteralsTest extends BaseTestCase
 {
-	protected function getFixtures()
-	{
-		return array(
+    protected function getFixtures()
+    {
+        return array(
             "\"Hello\"" => json_decode('{"type":"ExpressionStatement","expression":{"type":"Literal","value":"Hello","raw":"\"Hello\"","range":[0,7],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":7}}},"range":[0,7],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":7}}}'),
             '\"\\n\\r\\t\\v\\b\\f\\\\\\\'\\\"\\0\"' => json_decode('{"type":"ExpressionStatement","expression":{"type":"Literal","value":"\n\r\t\u000b\b\f\\\'\"\u0000","raw":"\"\\n\\r\\t\\v\\b\\f\\\\\'\\\"\\0\"","range":[0,22],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":22}}},"range":[0,22],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":22}}}'),
             "\"\\u0061\"" => json_decode('{"type":"ExpressionStatement","expression":{"type":"Literal","value":"a","raw":"\"\\\u0061\"","range":[0,8],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":8}}},"range":[0,8],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":8}}}'),
@@ -34,5 +34,5 @@ class StringLiteralsTest extends BaseTestCase
             //"\"Hello\\\r\nworld\"" => json_decode('{"type":"ExpressionStatement","expression":{"type":"Literal","value":"Helloworld","raw":"\"Hello\r\nworld\"","range":[0,15],"loc":{"start":{"line":1,"column":0},"end":{"line":2,"column":6}}},"range":[0,15],"loc":{"start":{"line":1,"column":0},"end":{"line":2,"column":6}}}'),
             '"Hello\\1World"' => json_decode('{"type":"ExpressionStatement","expression":{"type":"Literal","value":"Hello\u0001World","raw":"\"Hello\\\1World\"","range":[0,14],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":14}}},"range":[0,14],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":14}}}')
         );
-	}
+    }
 } 

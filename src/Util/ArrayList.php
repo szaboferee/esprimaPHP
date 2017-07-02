@@ -8,7 +8,6 @@ use EsprimaPhp\Parser\Node;
 use Iterator;
 use JsonSerializable;
 use RecursiveIterator;
-use RecursiveIteratorIterator;
 
 class ArrayList implements ArrayAccess, Countable, JsonSerializable, Iterator, RecursiveIterator
 {
@@ -51,7 +50,7 @@ class ArrayList implements ArrayAccess, Countable, JsonSerializable, Iterator, R
         return array_pop($this->array);
     }
 
-    public function push($value) 
+    public function push($value)
     {
         $this->array[] = $value;
     }
@@ -64,17 +63,6 @@ class ArrayList implements ArrayAccess, Countable, JsonSerializable, Iterator, R
     public function jsonSerialize()
     {
         return array_values($this->array);
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Return the current element
-     * @link http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     */
-    public function current()
-    {
-        return current($this->array);
     }
 
     /**
@@ -135,6 +123,17 @@ class ArrayList implements ArrayAccess, Countable, JsonSerializable, Iterator, R
     }
 
     /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Return the current element
+     * @link http://php.net/manual/en/iterator.current.php
+     * @return mixed Can return any type.
+     */
+    public function current()
+    {
+        return current($this->array);
+    }
+
+    /**
      * (PHP 5 &gt;= 5.1.0)<br/>
      * Returns an iterator for the current entry.
      * @link http://php.net/manual/en/recursiveiterator.getchildren.php
@@ -142,7 +141,6 @@ class ArrayList implements ArrayAccess, Countable, JsonSerializable, Iterator, R
      */
     public function getChildren()
     {
-        $current = $this->current();
-        return $current;
+        return $this->current();
     }
 }

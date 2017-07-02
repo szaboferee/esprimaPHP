@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node\Statement;
 
 use EsprimaPhp\Node\Statement;
@@ -23,7 +24,7 @@ class IfStatement extends Statement
      */
     public $alternate;
 
-    public function finish($esprima, $test, $consequent, $alternate) 
+    public function finish($esprima, $test, $consequent, $alternate)
     {
         $this->test = $test;
         $this->consequent = $consequent;

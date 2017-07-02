@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Parser;
 
 use EsprimaPhp\Parser;
@@ -19,7 +20,7 @@ class Position
      * @param integer $line
      * @param integer $column
      */
-    function __construct($line, $column) 
+    function __construct($line, $column)
     {
         $this->line = $line;
         $this->column = $column;
@@ -29,7 +30,7 @@ class Position
      * @param Parser $parser
      * @return Position
      */
-    public static function createFromParser($parser) 
+    public static function createFromParser($parser)
     {
         return new self(
             $parser->lineNumber,

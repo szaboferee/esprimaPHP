@@ -1,10 +1,12 @@
 <?php
+
 namespace EsprimaPhp\Node\Expression;
+
 use EsprimaPhp\Node\Expression;
 use EsprimaPhp\Node\Identifier;
+use EsprimaPhp\Parser;
 use EsprimaPhp\Parser\Node;
 use EsprimaPhp\Parser\Syntax;
-use EsprimaPhp\Parser;
 
 /**
  * Class MemberExpression
@@ -32,9 +34,9 @@ class MemberExpression extends Node
 
 
     /**
-     * @param Parser                $esprima
-     * @param string                $accessor
-     * @param Expression            $object
+     * @param Parser $esprima
+     * @param string $accessor
+     * @param Expression $object
      * @param Identifier|Expression $property
      *
      * @return MemberExpression

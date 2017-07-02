@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node;
 
 use EsprimaPhp\Parser\Node;

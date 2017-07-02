@@ -1,5 +1,7 @@
 <?php
+
 namespace EsprimaPhp\Node\Statement;
+
 use EsprimaPhp\Node\Statement;
 use EsprimaPhp\Parser\Syntax;
 

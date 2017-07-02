@@ -1,8 +1,10 @@
 <?php
+
 namespace EsprimaPhp\Node\Declaration;
+
 use EsprimaPhp\Node\Declaration;
-use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Parser;
+use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Util\ArrayList;
 
 /**
@@ -26,9 +28,9 @@ class VariableDeclaration extends Declaration
     public $kind;
 
     /**
-     * @param Parser    $esprima
+     * @param Parser $esprima
      * @param ArrayList $declarations
-     * @param string    $kind
+     * @param string $kind
      *
      * @return VariableDeclaration
      */

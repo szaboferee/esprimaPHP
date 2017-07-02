@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node\Expression;
 
 use EsprimaPhp\Node\Expression;
@@ -17,7 +18,7 @@ class SequenceExpression extends Expression
 
     /**
      * @param EsprimaPHP $esprima
-     * @param ArrayList  $expressions
+     * @param ArrayList $expressions
      *
      * @return SequenceExpression
      */

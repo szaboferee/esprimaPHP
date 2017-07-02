@@ -1,9 +1,10 @@
 <?php
 
 namespace EsprimaPhp\Node\Expression;
+
 use EsprimaPhp\Node\Expression;
-use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Parser;
+use EsprimaPhp\Parser\Syntax;
 
 /**
  * Class BinaryExpression
@@ -31,10 +32,10 @@ class BinaryExpression extends Expression
     public $right;
 
     /**
-     * @param Parser         $esprima
+     * @param Parser $esprima
      * @param BinaryOperator $operator
-     * @param Expression     $left
-     * @param Expression     $right
+     * @param Expression $left
+     * @param Expression $right
      *
      * @return BinaryExpression
      */

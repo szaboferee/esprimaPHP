@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node\Statement;
 
 use EsprimaPhp\Node\Statement;
@@ -27,7 +28,7 @@ class TryStatement extends Statement
      */
     public $finalizer;
 
-    public function finish($esprima, $block, $guardedHandlers, $handlers = null, $finalizer = null) 
+    public function finish($esprima, $block, $guardedHandlers, $handlers = null, $finalizer = null)
     {
         $this->block = $block;
         $this->guardedHandlers = $guardedHandlers;

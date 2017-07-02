@@ -20,13 +20,14 @@ class ForOfStatement extends Statement
      * @var Statement
      */
     public $body;
+
     /**
-     * @param EsprimaPHP                      $esprima
+     * @param EsprimaPHP $esprima
      * @param VariableDeclaration| Expression $left
-     * @param Expression                      $right
-     * @param Statement                       $body
+     * @param Expression $right
+     * @param Statement $body
      */
-    public function finish($esprima, $left, $right, $body) 
+    public function finish($esprima, $left, $right, $body)
     {
         $this->left = $left;
         $this->right = $right;

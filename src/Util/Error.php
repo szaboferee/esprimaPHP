@@ -15,7 +15,8 @@ class Error extends \Exception implements \JsonSerializable
     {
         $this->message = $message;
     }
-    public function __toString() 
+
+    public function __toString()
     {
         return sprintf(
             '{%d:[%d:%d]} - %s',
@@ -28,11 +29,11 @@ class Error extends \Exception implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        return (object) [
-         "index" => $this->index,
-         "lineNumber" => $this->lineNumber,
-         "column" => $this->column,
-         "message" => $this->message,
+        return (object)[
+            "index" => $this->index,
+            "lineNumber" => $this->lineNumber,
+            "column" => $this->column,
+            "message" => $this->message,
         ];
     }
 }

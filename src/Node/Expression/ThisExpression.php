@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node\Expression;
 
 use EsprimaPhp\Node\Expression;

@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node\Statement;
 
 use EsprimaPhp\Node\Statement;
@@ -27,7 +28,7 @@ class ForStatement extends Statement
      */
     public $body;
 
-    public function finish($esprima, $init, $test, $update, $body) 
+    public function finish($esprima, $init, $test, $update, $body)
     {
         $this->init = $init;
         $this->test = $test;

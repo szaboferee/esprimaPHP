@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp;
 
 use EsprimaPhp\Util\ArrayList;

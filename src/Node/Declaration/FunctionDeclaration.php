@@ -1,5 +1,7 @@
 <?php
+
 namespace EsprimaPhp\Node\Declaration;
+
 use EsprimaPhp\Node\Declaration;
 use EsprimaPhp\Parser\Syntax;
 
@@ -49,9 +51,9 @@ class FunctionDeclaration extends Declaration
     public $expression;
 
     /**
-     * @param EsprimaPHP   $esprima
-     * @param Identifier   $id
-     * @param Pattern[]    $params
+     * @param EsprimaPHP $esprima
+     * @param Identifier $id
+     * @param Pattern[] $params
      * @param Expression[] $defaults
      * @param $body
      *

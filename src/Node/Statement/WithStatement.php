@@ -23,7 +23,7 @@ class WithStatement extends Statement
     /**
      * @param EsprimaPHP $esprima
      * @param Expression $object
-     * @param Statement  $body
+     * @param Statement $body
      */
     public function finish($esprima, $object, $body)
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Node;
 
 use EsprimaPhp\Parser\Node;
@@ -10,7 +11,7 @@ class CatchClause extends Node
     public $param;
     public $body;
 
-    public function finish($esprima, $param, $body) 
+    public function finish($esprima, $param, $body)
     {
         $this->param = $param;
         $this->body = $body;

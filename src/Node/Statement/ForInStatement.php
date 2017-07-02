@@ -1,5 +1,7 @@
 <?php
+
 namespace EsprimaPhp\Node\Statement;
+
 use EsprimaPhp\Node\Statement;
 use EsprimaPhp\Parser\Syntax;
 
@@ -27,12 +29,12 @@ class ForInStatement extends Statement
     public $each;
 
     /**
-     * @param EsprimaPHP                      $esprima
+     * @param EsprimaPHP $esprima
      * @param VariableDeclaration| Expression $left
-     * @param Expression                      $right
-     * @param Statement                       $body
+     * @param Expression $right
+     * @param Statement $body
      */
-    public function finish($esprima, $left, $right, $body) 
+    public function finish($esprima, $left, $right, $body)
     {
         $this->left = $left;
         $this->right = $right;

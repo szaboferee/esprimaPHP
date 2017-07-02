@@ -1,4 +1,5 @@
 <?php
+
 namespace EsprimaPhp\Parser;
 
 class SourceLocation
@@ -16,7 +17,7 @@ class SourceLocation
      * @param Position $start
      * @param Position $end
      */
-    function __construct($start, $end) 
+    function __construct($start, $end)
     {
         $this->start = $start;
         $this->end = $end;
@@ -27,25 +28,13 @@ class SourceLocation
      *
      * @return SourceLocation
      */
-    public static function createFromParser($parser, $startToken = null) 
+    public static function createFromParser($parser, $startToken = null)
     {
-        if($startToken) {
+        if ($startToken) {
             return self::wrappingSourceLocation($startToken);
         } else {
             return self::sourceLocation($parser);
         }
-    }
-
-    /**
-     * @param $parser
-     * @return SourceLocation
-     */
-    protected static function sourceLocation($parser)
-    {
-        return new self(
-            Position::createFromParser($parser),
-            null
-        );
     }
 
     /**
@@ -72,5 +61,17 @@ class SourceLocation
             );
 
         }
+    }
+
+    /**
+     * @param $parser
+     * @return SourceLocation
+     */
+    protected static function sourceLocation($parser)
+    {
+        return new self(
+            Position::createFromParser($parser),
+            null
+        );
     }
 }

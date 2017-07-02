@@ -1,10 +1,12 @@
 <?php
+
 namespace EsprimaPhp\Node\Expression;
+
 use EsprimaPhp\Node\Expression;
 use EsprimaPhp\Node\Identifier;
 use EsprimaPhp\Node\Statement\BlockStatement;
-use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Parser;
+use EsprimaPhp\Parser\Syntax;
 use EsprimaPhp\Util\ArrayList;
 
 /**
@@ -53,10 +55,10 @@ class FunctionExpression extends Expression
     public $expression;
 
     /**
-     * @param Parser                    $esprima
-     * @param Identifier|null           $id
-     * @param ArrayList                 $params
-     * @param ArrayList                 $defaults
+     * @param Parser $esprima
+     * @param Identifier|null $id
+     * @param ArrayList $params
+     * @param ArrayList $defaults
      * @param BlockStatement|Expression $body
      *
      * @return FunctionExpression

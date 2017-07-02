@@ -20,7 +20,7 @@ class DoWhileStatement extends Statement
      */
     public $test;
 
-    public function finish($esprima, $body, $test) 
+    public function finish($esprima, $body, $test)
     {
         $this->body = $body;
         $this->test = $test;
