@@ -2,8 +2,6 @@ dist: trusty
 sudo: required
 jdk:
   - oraclejdk8
-script:
-  - sonar-scanner
 cache:
   directories:
     - '$HOME/.sonar/cache'
@@ -21,3 +19,4 @@ after_script:
 addons:
   sonarcloud:
     organization: "szaboferee-github" # the key of the org you chose at step #3
+    token: $SONAR_TOKEN
