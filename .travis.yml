@@ -12,7 +12,7 @@ language: php
 php: 5.5
 before_script: composer install --dev
 script:
-  - ./vendor/bin/phpunit --tap --bootstrap ./vendor/autoload.php -v --coverage-clover build/logs/clover.xml test
+  - ./vendor/bin/phpunit --tap --bootstrap ./vendor/autoload.php -v --coverage-clover build/logs/clover.xml --log-junit build/logs/phpunit.xml test
   - sonar-scanner
 after_script:
   - ./bin/test-reporter --stdout > codeclimate.json
