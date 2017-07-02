@@ -1,4 +1,13 @@
-sudo: false
+dist: trusty
+sudo: required
+jdk:
+  - oraclejdk8
+script:
+  - sonar-scanner
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
+
 language: php
 php: 5.5
 before_script: composer install --dev
