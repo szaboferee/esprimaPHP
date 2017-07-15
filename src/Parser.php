@@ -6,6 +6,7 @@ namespace EsprimaPhp;
 ini_set('xdebug.max_nesting_level', 1000);
 
 use EsprimaPhp\Node\CatchClause;
+use EsprimaPhp\Node\ClassNameConstants;
 use EsprimaPhp\Node\Declaration\FunctionDeclaration;
 use EsprimaPhp\Node\Declaration\VariableDeclaration;
 use EsprimaPhp\Node\Expression\ArrayExpression;
@@ -44,6 +45,7 @@ use stdClass;
 
 class Parser
 {
+    const ILLEGAL = 'ILLEGAL';
     /**
      * @var SourceString|SourceString[]
      */
@@ -78,27 +80,7 @@ class Parser
         $this->state = new State();
         $this->extra = new Extra();
 
-        $options = $options ?: array();
-
-        $options['tokens'] = true;
-        $this->extra->tokens = new ArrayList();
-        $this->extra->tokenize = true;
-        // The following two fields are necessary to compute the Regex tokens.
-        $this->extra->openParenToken = -1;
-        $this->extra->openCurlyToken = -1;
-
-        if (array_key_exists('range', $options) && is_bool($options['range'])) {
-            $this->extra->range = $options['range'];
-        }
-        if (array_key_exists('loc', $options) && is_bool($options['loc'])) {
-            $this->extra->loc = $options['loc'];
-        }
-        if (array_key_exists('comment', $options) && is_bool($options['comment']) && $options['comment']) {
-            $this->extra->comments = new ArrayList();
-        }
-        if (array_key_exists('tolerant', $options) && is_bool($options['tolerant']) && $options['tolerant']) {
-            $this->extra->errors = new ArrayList();
-        }
+        $this->initTokenizerOptions($options);
 
         try {
             $this->peek();
@@ -171,37 +153,7 @@ class Parser
         $this->extra = new Extra();
 
 
-        if ($options !== null) {
-            if (array_key_exists('range', $options) && is_bool($options['range'])) {
-                $this->extra->range = $options['range'];
-            }
-            if (array_key_exists('loc', $options) && is_bool($options['loc'])) {
-                $this->extra->loc = $options['loc'];
-            }
-            if (array_key_exists('attachComment', $options) && is_bool($options['attachComment'])) {
-                $this->extra->attachComment = $options['attachComment'];
-            }
-            if ($this->extra->loc && array_key_exists('source', $options) && is_string($options['source'])) {
-                $this->extra->source = $options['source'];
-            }
-            if (array_key_exists('tokens', $options) && is_bool($options['tokens']) && $options['tokens']) {
-                $this->extra->tokens = new ArrayList();
-            }
-            if (array_key_exists('comment', $options) && is_bool($options['comment']) && $options['comment']) {
-                $this->extra->comments = new ArrayList();
-            }
-            if (array_key_exists('tolerant', $options) && is_bool($options['tolerant']) && $options['tolerant']) {
-                $this->extra->errors = new ArrayList();
-            }
-
-            if ($this->extra->attachComment) {
-                $this->extra->range = true;
-                $this->extra->comments = new ArrayList();
-                $this->extra->bottomRightStack = new ArrayList();
-                $this->extra->trailingComments = new ArrayList();
-                $this->extra->leadingComments = new ArrayList();
-            }
-        }
+        $this->initParserOptions($options);
 
         try {
             $program = $this->parseProgram();
@@ -253,7 +205,7 @@ class Parser
             if ($directive == 'use strict') {
                 $this->strict = true;
                 if ($firstRestricted) {
-                    $this->throwErrorTolerant($firstRestricted, Messages::StrictOctalLiteral);
+                    $this->throwErrorTolerant($firstRestricted, Messages::OCTAL_LITERALS_ARE_NOT_ALLOWED_IN_STRICT_MODE);
                 }
             } else {
                 if (!$firstRestricted && $token->octal) {
@@ -364,11 +316,11 @@ class Parser
             $expr = $this->parseUnaryExpression();
             // 11.4.4, 11.4.5
             if ($this->strict && $expr->type == Syntax::IDENTIFIER && Helper::isRestrictedWord($expr->name)) {
-                $this->throwErrorTolerant(null, Messages::StrictLHSPrefix);
+                $this->throwErrorTolerant(null, Messages::PREFIX_INCREMENT_DECREMENT_MAY_NOT_HAVE_EVAL_OR_ARGUMENTS_OPERAND_IN_STRICT_MODE);
             }
 
             if (!Helper::isLeftHandSide($expr)) {
-                $this->throwErrorTolerant(null, Messages::InvalidLHSInAssignment);
+                $this->throwErrorTolerant(null, Messages::INVALID_LEFT_HAND_SIDE_IN_ASSIGNMENT);
             }
 
             $expr = (new UpdateExpression($this, $startToken))->finish($this, $token->value, $expr);
@@ -383,7 +335,7 @@ class Parser
             $expr = $this->parseUnaryExpression();
             $expr = (new UnaryExpression($this, $startToken))->finish($this, $token->value, $expr);
             if ($this->strict && $expr->operator == 'delete' && $expr->argument->type == Syntax::IDENTIFIER) {
-                $this->throwErrorTolerant(null, Messages::StrictDelete);
+                $this->throwErrorTolerant(null, Messages::DELETE_OF_AN_UNQUALIFIED_IDENTIFIER_IN_STRICT_MODE);
             }
         } else {
             $expr = $this->parsePostfixExpression();
@@ -400,11 +352,11 @@ class Parser
             if (($this->match('++') || $this->match('--')) && !$this->peekLineTerminator()) {
                 // 11.3.1, 11.3.2
                 if ($this->strict && $expr->type == Syntax::IDENTIFIER && Helper::isRestrictedWord($expr->name)) {
-                    $this->throwErrorTolerant(null, Messages::StrictLHSPostfix);
+                    $this->throwErrorTolerant(null, Messages::POSTFIX_INCREMENT_DECREMENT_MAY_NOT_HAVE_EVAL_OR_ARGUMENTS_OPERAND_IN_STRICT_MODE);
                 }
 
                 if (!Helper::isLeftHandSide($expr)) {
-                    $this->throwErrorTolerant(null, Messages::InvalidLHSInAssignment);
+                    $this->throwErrorTolerant(null, Messages::INVALID_LEFT_HAND_SIDE_IN_ASSIGNMENT);
                 }
 
                 $token = $this->lex();
@@ -645,7 +597,7 @@ class Parser
                 ++$this->index;
                 $this->lineStart = $this->index;
                 if ($this->index >= $this->length) {
-                    $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+                    $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
                 }
             } else if ($ch == 0x2A) {
                 // Block comment ends with '*/'.
@@ -664,7 +616,7 @@ class Parser
                 ++$this->index;
             }
         }
-        $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+        $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
     }
 
     private function throwError()
@@ -765,12 +717,12 @@ class Parser
         // '\u' (U+005C, U+0075) denotes an escaped character.
         if ($ch == 0x5C) {
             if ($this->source->charCodeAt($this->index) != 0x75) {
-                $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+                $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
             }
             ++$this->index;
             $ch = $this->scanHexEscape('u');
             if (!$ch || $ch == '\\' || !Helper::isIdentifierStart($ch->charCodeAt(0))) {
-                $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+                $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
             }
             $id = $ch;
         }
@@ -787,12 +739,12 @@ class Parser
             if ($ch == 0x5C) {
                 $id = substr($id, 0, strlen($id) - 1);
                 if ($this->source->charCodeAt($this->index) != 0x75) {
-                    $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+                    $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
                 }
                 ++$this->index;
                 $ch = $this->scanHexEscape('u');
                 if (!$ch || $ch == '\\' || !Helper::isIdentifierPart($ch->charCodeAt(0))) {
-                    $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+                    $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
                 }
                 $id .= $ch;
             }
@@ -945,7 +897,7 @@ class Parser
             );
         }
 
-        $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+        $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
     }
 
     private function scanStringLiteral()
@@ -1052,7 +1004,7 @@ class Parser
         }
 
         if ($quote != '') {
-            $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+            $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
         }
 
         $token = new Token(Token::STRING_LITERAL, $str, $this->lineNumber, $this->lineStart, $start, $this->index);
@@ -1070,7 +1022,7 @@ class Parser
 
         // At least, one hex digit is required.
         if ($ch == '}') {
-            $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+            $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
         }
 
         while ($this->index < $this->length) {
@@ -1082,7 +1034,7 @@ class Parser
         }
 
         if ($code > 0x10FFFF || $ch != '}') {
-            $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+            $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
         }
 
         // UTF-16 Encoding
@@ -1106,7 +1058,6 @@ class Parser
         $number = '';
         if ($ch != '.') {
             $number = $this->source[$this->index++];
-            //$ch = $this->source[$this->index];
             $ch = $this->source->offsetExists($this->index) ? $this->source[$this->index] : '';
 
             // Hex number starts with '0x'.
@@ -1122,14 +1073,13 @@ class Parser
 
                 // decimal number starts with '0' such as '09' is illegal.
                 if ($ch && Helper::isDecimalDigit($ch->charCodeAt(0))) {
-                    $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+                    $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
                 }
             }
 
             while (Helper::isDecimalDigit($this->source->charCodeAt($this->index))) {
                 $number .= $this->source[$this->index++];
             }
-            //$ch = $this->source[$this->index];
             $ch = $this->source->offsetExists($this->index) ? $this->source[$this->index] : '';
         }
 
@@ -1153,12 +1103,12 @@ class Parser
                     $number .= $this->source[$this->index++];
                 }
             } else {
-                $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+                $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
             }
         }
 
         if (Helper::isIdentifierStart($this->source->charCodeAt($this->index))) {
-            $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+            $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
         }
 
         return new Token(Token::NUMERIC_LITERAL, floatval((string)$number), $this->lineNumber, $this->lineStart, $start, $this->index);
@@ -1176,11 +1126,11 @@ class Parser
         }
 
         if (strlen($number) == 0) {
-            $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+            $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
         }
 
         if (Helper::isIdentifierStart($this->source->charCodeAt($this->index))) {
-            $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+            $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
         }
 
         return new Token(Token::NUMERIC_LITERAL, hexdec('0x' . $number), $this->lineNumber, $this->lineStart, $start, $this->index);
@@ -1199,7 +1149,7 @@ class Parser
         if (Helper::isIdentifierStart($this->source->charCodeAt($this->index))
             || Helper::isDecimalDigit($this->source->charCodeAt($this->index))
         ) {
-            $this->throwError(null, Messages::UnexpectedToken, 'ILLEGAL');
+            $this->throwError(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
         }
 
         $token = new Token(Token::NUMERIC_LITERAL, octdec($number), $this->lineNumber, $this->lineStart, $start, $this->index);
@@ -1225,7 +1175,7 @@ class Parser
             if ($prevToken->value == ')') {
                 $checkToken = $this->extra->tokens[$this->extra->openParenToken - 1];
                 if ($checkToken
-                    && $checkToken->type == 'Keyword'
+                    && $checkToken->type == TokenName::KEYWORD
                     && ($checkToken->value == 'if'
                         || $checkToken->value == 'while'
                         || $checkToken->value == 'for'
@@ -1239,7 +1189,7 @@ class Parser
                 // Dividing a function by anything makes little sense,
                 // but we have to check for that.
                 if ($this->extra->tokens[$this->extra->openCurlyToken - 3]
-                    && $this->extra->tokens[$this->extra->openCurlyToken - 3]->type == 'Keyword'
+                    && $this->extra->tokens[$this->extra->openCurlyToken - 3]->type == TokenName::KEYWORD
                 ) {
                     // Anonymous function.
                     $checkToken = $this->extra->tokens[$this->extra->openCurlyToken - 4];
@@ -1247,7 +1197,7 @@ class Parser
                         return $this->scanPunctuator();
                     }
                 } else if ($this->extra->tokens[$this->extra->openCurlyToken - 4]
-                    && $this->extra->tokens[$this->extra->openCurlyToken - 4]->type == 'Keyword'
+                    && $this->extra->tokens[$this->extra->openCurlyToken - 4]->type == TokenName::KEYWORD
                 ) {
                     // Named function.
                     $checkToken = $this->extra->tokens[$this->extra->openCurlyToken - 5];
@@ -1268,7 +1218,7 @@ class Parser
             }
             return $this->collectRegex();
         }
-        if ($prevToken->type == 'Keyword') {
+        if ($prevToken->type == TokenName::KEYWORD) {
             return $this->collectRegex();
         }
         return $this->scanPunctuator();
@@ -1291,10 +1241,8 @@ class Parser
             // Pop the previous token, which is likely '/' or '/='
             if (count($this->extra->tokens) > 0) {
                 $token = $this->extra->tokens[count($this->extra->tokens) - 1];
-                if ($token->range[0] == $pos && $token->type == 'Punctuator') {
-                    if ($token->value == '/' || $token->value == '/=') {
+                if ($token->range[0] == $pos && $token->type == 'Punctuator' && ($token->value == '/' || $token->value == '/=')) {
                         $this->extra->tokens->pop();
-                    }
                 }
             }
             $newToken = new Token('RegularExpression', $regex->literal);
@@ -1342,11 +1290,11 @@ class Parser
                 $ch = $this->source[$this->index++];
                 // ECMA-262 7.8.5
                 if (Helper::isLineTerminator($ch->charCodeAt(0))) {
-                    $this->throwError(null, Messages::UnterminatedRegExp);
+                    $this->throwError(null, Messages::INVALID_REGULAR_EXPRESSION_MISSING);
                 }
                 $str .= $ch;
             } else if (Helper::isLineTerminator($ch->charCodeAt(0))) {
-                $this->throwError(null, Messages::UnterminatedRegExp);
+                $this->throwError(null, Messages::INVALID_REGULAR_EXPRESSION_MISSING);
             } else if ($classMarker) {
                 if ($ch == ']') {
                     $classMarker = false;
@@ -1362,7 +1310,7 @@ class Parser
         }
 
         if (!$terminated) {
-            $this->throwError(null, Messages::UnterminatedRegExp);
+            $this->throwError(null, Messages::INVALID_REGULAR_EXPRESSION_MISSING);
         }
         // Exclude leading and trailing slash.
         $body = substr($str, 1, strlen($str) - 2);
@@ -1397,10 +1345,10 @@ class Parser
                         $flags .= 'u';
                         $str .= '\\u';
                     }
-                    $this->throwErrorTolerant(null, Messages::UnexpectedToken, 'ILLEGAL');
+                    $this->throwErrorTolerant(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
                 } else {
                     $str .= '\\';
-                    $this->throwErrorTolerant(null, Messages::UnexpectedToken, 'ILLEGAL');
+                    $this->throwErrorTolerant(null, Messages::UNEXPECTED_TOKEN_S, self::ILLEGAL);
                 }
             } else {
                 $flags .= $ch;
@@ -1434,7 +1382,7 @@ class Parser
 
         $exp = "/" . $pattern . "/" . $flags;
         if (@preg_match($exp, null) === false) {
-            $this->throwError(null, Messages::InvalidRegExp);
+            $this->throwError(null, Messages::INVALID_REGULAR_EXPRESSION);
         } else {
             return $exp;
         }
@@ -1443,33 +1391,33 @@ class Parser
     private function throwUnexpected($token)
     {
         if ($token->type == Token::EOF) {
-            $this->throwError($token, Messages::UnexpectedEOS);
+            $this->throwError($token, Messages::UNEXPECTED_END_OF_INPUT);
         }
 
         if ($token->type == Token::NUMERIC_LITERAL) {
-            $this->throwError($token, Messages::UnexpectedNumber);
+            $this->throwError($token, Messages::UNEXPECTED_NUMBER);
         }
 
         if ($token->type == Token::STRING_LITERAL) {
-            $this->throwError($token, Messages::UnexpectedString);
+            $this->throwError($token, Messages::UNEXPECTED_STRING);
         }
 
         if ($token->type == Token::IDENTIFIER) {
-            $this->throwError($token, Messages::UnexpectedIdentifier);
+            $this->throwError($token, Messages::UNEXPECTED_IDENTIFIER);
         }
 
         if ($token->type == Token::KEYWORD) {
             if (Helper::isFutureReservedWord($token->value)) {
-                $this->throwError($token, Messages::UnexpectedReserved);
+                $this->throwError($token, Messages::UNEXPECTED_RESERVED_WORD);
             } else if ($this->strict && Helper::isStrictModeReservedWord($token->value)) {
-                $this->throwErrorTolerant($token, Messages::StrictReservedWord);
+                $this->throwErrorTolerant($token, Messages::USE_OF_FUTURE_RESERVED_WORD_IN_STRICT_MODE);
                 return;
             }
-            $this->throwError($token, Messages::UnexpectedToken, $token->value);
+            $this->throwError($token, Messages::UNEXPECTED_TOKEN_S, $token->value);
         }
 
         // BooleanLiteral, NullLiteral, or Punctuator.
-        $this->throwError($token, Messages::UnexpectedToken, $token->value);
+        $this->throwError($token, Messages::UNEXPECTED_TOKEN_S, $token->value);
     }
 
     private function parseLeftHandSideExpression()
@@ -1514,35 +1462,35 @@ class Parser
         $node = new MutableNode($this);
 
         if ($type == Token::IDENTIFIER) {
-            $expr = $node->finish('\EsprimaPhp\Node\Identifier', $this, $this->lex()->value);
+            $expr = $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_IDENTIFIER, $this, $this->lex()->value);
         } else if ($type == Token::STRING_LITERAL || $type == Token::NUMERIC_LITERAL) {
             if ($this->strict && $this->lookahead->octal) {
-                $this->throwErrorTolerant($this->lookahead, Messages::StrictOctalLiteral);
+                $this->throwErrorTolerant($this->lookahead, Messages::OCTAL_LITERALS_ARE_NOT_ALLOWED_IN_STRICT_MODE);
             }
-            $expr = $node->finish('\EsprimaPhp\Node\Expression\Literal', $this, $this->lex());
+            $expr = $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_EXPRESSION_LITERAL, $this, $this->lex());
         } else if ($type == Token::KEYWORD) {
             if ($this->matchKeyword('function')) {
                 return $this->parseFunctionExpression();
             }
             if ($this->matchKeyword('this')) {
                 $this->lex();
-                $expr = $node->finish('\EsprimaPhp\Node\Expression\ThisExpression', $this);
+                $expr = $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_EXPRESSION_THIS_EXPRESSION, $this);
             } else {
                 $this->throwUnexpected($this->lex());
             }
         } else if ($type == Token::BOOLEAN_LITERAL) {
             $token = $this->lex();
             $token->value = ($token->value == 'true');
-            $expr = $node->finish('\EsprimaPhp\Node\Expression\Literal', $this, $token);
+            $expr = $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_EXPRESSION_LITERAL, $this, $token);
         } else if ($type == Token::NULL_LITERAL) {
             $token = $this->lex();
             $token->value = null;
-            $expr = $node->finish('\EsprimaPhp\Node\Expression\Literal', $this, $token);
+            $expr = $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_EXPRESSION_LITERAL, $this, $token);
         } else if ($this->match('/') || $this->match('/=')) {
             if ($this->extra->tokens) {
-                $expr = $node->finish('\EsprimaPhp\Node\Expression\Literal', $this, $this->collectRegex());
+                $expr = $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_EXPRESSION_LITERAL, $this, $this->collectRegex());
             } else {
-                $expr = $node->finish('\EsprimaPhp\Node\Expression\Literal', $this, $this->scanRegExp());
+                $expr = $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_EXPRESSION_LITERAL, $this, $this->scanRegExp());
             }
             $this->peek();
         } else {
@@ -1636,12 +1584,12 @@ class Parser
         if ($this->matchAssign()) {
             // LeftHandSideExpression
             if (!Helper::isLeftHandSide($expr)) {
-                $this->throwErrorTolerant(null, Messages::InvalidLHSInAssignment);
+                $this->throwErrorTolerant(null, Messages::INVALID_LEFT_HAND_SIDE_IN_ASSIGNMENT);
             }
 
             // 11.13.1
             if ($this->strict && $expr->type == Syntax::IDENTIFIER && Helper::isRestrictedWord($expr->name)) {
-                $this->throwErrorTolerant($token, Messages::StrictLHSAssignment);
+                $this->throwErrorTolerant($token, Messages::ASSIGNMENT_TO_EVAL_OR_ARGUMENTS_IS_NOT_ALLOWED_IN_STRICT_MODE);
             }
 
             $token = $this->lex();
@@ -1680,7 +1628,7 @@ class Parser
             }
         }
 
-        if ($options->message == Messages::StrictParamDupe) {
+        if ($options->message == Messages::STRICT_MODE_FUNCTION_MAY_NOT_HAVE_DUPLICATE_PARAMETER_NAMES) {
             $this->throwError(
                 $this->strict ? $options->stricted : $options->firstRestricted,
                 $options->message
@@ -1707,22 +1655,22 @@ class Parser
         if ($this->strict) {
             if (Helper::isRestrictedWord($name)) {
                 $options->stricted = $param;
-                $options->message = Messages::StrictParamName;
+                $options->message = Messages::PARAMETER_NAME_EVAL_OR_ARGUMENTS_IS_NOT_ALLOWED_IN_STRICT_MODE;
             }
             if ($options->paramSet->offsetExists($key)) {
                 $options->stricted = $param;
-                $options->message = Messages::StrictParamDupe;
+                $options->message = Messages::STRICT_MODE_FUNCTION_MAY_NOT_HAVE_DUPLICATE_PARAMETER_NAMES;
             }
         } else if (!property_exists($options, 'firstRestricted') || !$options->firstRestricted) {
             if (Helper::isRestrictedWord($name)) {
                 $options->firstRestricted = $param;
-                $options->message = Messages::StrictParamName;
+                $options->message = Messages::PARAMETER_NAME_EVAL_OR_ARGUMENTS_IS_NOT_ALLOWED_IN_STRICT_MODE;
             } else if (Helper::isStrictModeReservedWord($name)) {
                 $options->firstRestricted = $param;
-                $options->message = Messages::StrictReservedWord;
+                $options->message = Messages::USE_OF_FUTURE_RESERVED_WORD_IN_STRICT_MODE;
             } else if ($options->paramSet->offsetExists($key)) {
                 $options->firstRestricted = $param;
-                $options->message = Messages::StrictParamDupe;
+                $options->message = Messages::STRICT_MODE_FUNCTION_MAY_NOT_HAVE_DUPLICATE_PARAMETER_NAMES;
             }
         }
         $options->paramSet[$key] = true;
@@ -1745,7 +1693,7 @@ class Parser
 
         $this->strict = $previousStrict;
 
-        return $node->finish('\EsprimaPhp\Node\Expression\ArrowFunctionExpression', $this, $options->params, $options->defaults, $body, $body->type !== Syntax::BLOCK_STATEMENT);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_EXPRESSION_ARROW_FUNCTION_EXPRESSION, $this, $options->params, $options->defaults, $body, $body->type !== Syntax::BLOCK_STATEMENT);
     }
 
     private function parseConciseBody()
@@ -1779,7 +1727,7 @@ class Parser
             if ($directive == 'use strict') {
                 $this->strict = true;
                 if ($firstRestricted) {
-                    $this->throwErrorTolerant($firstRestricted, Messages::StrictOctalLiteral);
+                    $this->throwErrorTolerant($firstRestricted, Messages::OCTAL_LITERALS_ARE_NOT_ALLOWED_IN_STRICT_MODE);
                 }
             } else {
                 if (!$firstRestricted && $token->octal) {
@@ -1874,7 +1822,7 @@ class Parser
 
         // 12.2.1
         if ($this->strict && Helper::isRestrictedWord($id->name)) {
-            $this->throwErrorTolerant(null, Messages::StrictVarName);
+            $this->throwErrorTolerant(null, Messages::VARIABLE_NAME_MAY_NOT_BE_EVAL_OR_ARGUMENTS_IN_STRICT_MODE);
         }
 
         if ($kind == 'const') {
@@ -1932,15 +1880,15 @@ class Parser
         $id = $this->parseVariableIdentifier();
         if ($this->strict) {
             if (Helper::isRestrictedWord($token->value)) {
-                $this->throwErrorTolerant($token, Messages::StrictFunctionName);
+                $this->throwErrorTolerant($token, Messages::FUNCTION_NAME_MAY_NOT_BE_EVAL_OR_ARGUMENTS_IN_STRICT_MODE);
             }
         } else {
             if (Helper::isRestrictedWord($token->value)) {
                 $firstRestricted = $token;
-                $message = Messages::StrictFunctionName;
+                $message = Messages::FUNCTION_NAME_MAY_NOT_BE_EVAL_OR_ARGUMENTS_IN_STRICT_MODE;
             } else if (Helper::isStrictModeReservedWord($token->value)) {
                 $firstRestricted = $token;
-                $message = Messages::StrictReservedWord;
+                $message = Messages::USE_OF_FUTURE_RESERVED_WORD_IN_STRICT_MODE;
             }
         }
 
@@ -2082,19 +2030,19 @@ class Parser
 
             $key = '$' . $expr->name;
             if (isset($this->state->labelSet[$key])) {
-                $this->throwError(null, Messages::Redeclaration, 'Label', $expr->name);
+                $this->throwError(null, Messages::S_S_HAS_ALREADY_BEEN_DECLARED, 'Label', $expr->name);
             }
 
             $this->state->labelSet[$key] = true;
             $labeledBody = $this->parseStatement();
             unset($this->state->labelSet[$key]);
 
-            return $node->finish('\EsprimaPhp\Node\Statement\LabeledStatement', $this, $expr, $labeledBody);
+            return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_LABELED_STATEMENT, $this, $expr, $labeledBody);
         }
 
         $this->consumeSemicolon();
 
-        return $node->finish('\EsprimaPhp\Node\Statement\ExpressionStatement', $this, $expr);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_EXPRESSION_STATEMENT, $this, $expr);
     }
 
     private function parseBlock()
@@ -2142,7 +2090,7 @@ class Parser
         $expr = $this->parseExpression();
         $this->consumeSemicolon();
 
-        return $node->finish('\EsprimaPhp\Node\Statement\ExpressionStatement', $this, $expr);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_EXPRESSION_STATEMENT, $this, $expr);
     }
 
     private function parseBreakStatement(MutableNode $node)
@@ -2154,18 +2102,18 @@ class Parser
             $this->lex();
 
             if (!($this->state->inIteration || $this->state->inSwitch)) {
-                $this->throwError(null, Messages::IllegalBreak);
+                $this->throwError(null, Messages::ILLEGAL_BREAK_STATEMENT);
             }
 
-            return $node->finish('\EsprimaPhp\Node\Statement\BreakStatement', $this, null);
+            return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_BREAK_STATEMENT, $this, null);
         }
 
         if ($this->peekLineTerminator()) {
             if (!($this->state->inIteration || $this->state->inSwitch)) {
-                $this->throwError(null, Messages::IllegalBreak);
+                $this->throwError(null, Messages::ILLEGAL_BREAK_STATEMENT);
             }
 
-            return $node->finish('\EsprimaPhp\Node\Statement\BreakStatement', $this, null);
+            return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_BREAK_STATEMENT, $this, null);
         }
 
         if ($this->lookahead->type == Token::IDENTIFIER) {
@@ -2173,17 +2121,17 @@ class Parser
 
             $key = '$' . $label->name;
             if (!$this->state->labelSet->offsetExists($key)) {
-                $this->throwError(null, Messages::UnknownLabel, $label->name);
+                $this->throwError(null, Messages::UNDEFINED_LABEL_S, $label->name);
             }
         }
 
         $this->consumeSemicolon();
 
         if ($label == null && !($this->state->inIteration || $this->state->inSwitch)) {
-            $this->throwError(null, Messages::IllegalBreak);
+            $this->throwError(null, Messages::ILLEGAL_BREAK_STATEMENT);
         }
 
-        return $node->finish('\EsprimaPhp\Node\Statement\BreakStatement', $this, $label);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_BREAK_STATEMENT, $this, $label);
     }
 
     private function peekLineTerminator()
@@ -2211,18 +2159,18 @@ class Parser
             $this->lex();
 
             if (!$this->state->inIteration) {
-                $this->throwError(null, Messages::IllegalContinue);
+                $this->throwError(null, Messages::ILLEGAL_CONTINUE_STATEMENT);
             }
 
-            return $node->finish('\EsprimaPhp\Node\Statement\ContinueStatement', $this, null);
+            return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_CONTINUE_STATEMENT, $this, null);
         }
 
         if ($this->peekLineTerminator()) {
             if (!$this->state->inIteration) {
-                $this->throwError(null, Messages::IllegalContinue);
+                $this->throwError(null, Messages::ILLEGAL_CONTINUE_STATEMENT);
             }
 
-            return $node->finish('\EsprimaPhp\Node\Statement\ContinueStatement', $this, null);
+            return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_CONTINUE_STATEMENT, $this, null);
         }
 
         if ($this->lookahead->type == Token::IDENTIFIER) {
@@ -2230,17 +2178,17 @@ class Parser
 
             $key = '$' . $label->name;
             if (!$this->state->labelSet->offsetExists($key)) {
-                $this->throwError(null, Messages::UnknownLabel, $label->name);
+                $this->throwError(null, Messages::UNDEFINED_LABEL_S, $label->name);
             }
         }
 
         $this->consumeSemicolon();
 
         if ($label == null && !$this->state->inIteration) {
-            $this->throwError(null, Messages::IllegalContinue);
+            $this->throwError(null, Messages::ILLEGAL_CONTINUE_STATEMENT);
         }
 
-        return $node->finish('\EsprimaPhp\Node\Statement\ContinueStatement', $this, $label);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_CONTINUE_STATEMENT, $this, $label);
     }
 
     private function parseDebuggerStatement(MutableNode $node)
@@ -2249,7 +2197,7 @@ class Parser
 
         $this->consumeSemicolon();
 
-        return $node->finish('\EsprimaPhp\Node\Statement\DebuggerStatement', $this);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_DEBUGGER_STATEMENT, $this);
     }
 
     private function parseDoWhileStatement(MutableNode $node)
@@ -2270,7 +2218,7 @@ class Parser
             $this->lex();
         }
 
-        return $node->finish('\EsprimaPhp\Node\Statement\DoWhileStatement', $this, $body, $test);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_DO_WHILE_STATEMENT, $this, $body, $test);
     }
 
     private function parseForStatement(MutableNode $node)
@@ -2302,7 +2250,7 @@ class Parser
                 if ($this->matchKeyword('in')) {
                     // LeftHandSideExpression
                     if (!Helper::isLeftHandSide($init)) {
-                        $this->throwErrorTolerant(null, Messages::InvalidLHSInForIn);
+                        $this->throwErrorTolerant(null, Messages::INVALID_LEFT_HAND_SIDE_IN_FOR_IN);
                     }
 
                     $this->lex();
@@ -2339,8 +2287,8 @@ class Parser
         $this->state->inIteration = $oldInIteration;
 
         return (!$left) ?
-            $node->finish('\EsprimaPhp\Node\Statement\ForStatement', $this, $init, $test, $update, $body) :
-            $node->finish('\EsprimaPhp\Node\Statement\ForInStatement', $this, $left, $right, $body);
+            $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_FOR_STATEMENT, $this, $init, $test, $update, $body) :
+            $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_FOR_IN_STATEMENT, $this, $left, $right, $body);
 
     }
 
@@ -2368,7 +2316,7 @@ class Parser
             $alternate = null;
         }
 
-        return $node->finish('\EsprimaPhp\Node\Statement\IfStatement', $this, $test, $consequent, $alternate);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_IF_STATEMENT, $this, $test, $consequent, $alternate);
     }
 
     private function parseReturnStatement(MutableNode $node)
@@ -2378,31 +2326,27 @@ class Parser
         $this->expectKeyword('return');
 
         if (!$this->state->inFunctionBody) {
-            $this->throwErrorTolerant(null, Messages::IllegalReturn);
+            $this->throwErrorTolerant(null, Messages::ILLEGAL_RETURN_STATEMENT);
         }
 
         // 'return' followed by a space and an identifier is very common.
-        if ($this->source->charCodeAt($this->index) == 0x20) {
-            if (Helper::isIdentifierStart($this->source->charCodeAt($this->index + 1))) {
+        if ($this->source->charCodeAt($this->index) == 0x20 && Helper::isIdentifierStart($this->source->charCodeAt($this->index + 1))) {
                 $argument = $this->parseExpression();
                 $this->consumeSemicolon();
-                return $node->finish('\EsprimaPhp\Node\Statement\ReturnStatement', $this, $argument);
-            }
+                return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_RETURN_STATEMENT, $this, $argument);
         }
 
         if ($this->peekLineTerminator()) {
-            return $node->finish('\EsprimaPhp\Node\Statement\ReturnStatement', $this, null);
+            return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_RETURN_STATEMENT, $this, null);
         }
 
-        if (!$this->match(';')) {
-            if (!$this->match('}') && $this->lookahead->type !== Token::EOF) {
+        if (!$this->match(';') && !$this->match('}') && $this->lookahead->type !== Token::EOF) {
                 $argument = $this->parseExpression();
-            }
         }
 
         $this->consumeSemicolon();
 
-        return $node->finish('\EsprimaPhp\Node\Statement\ReturnStatement', $this, $argument);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_RETURN_STATEMENT, $this, $argument);
     }
 
     private function parseSwitchStatement(MutableNode $node)
@@ -2421,7 +2365,7 @@ class Parser
 
         if ($this->match('}')) {
             $this->lex();
-            return $node->finish('\EsprimaPhp\Node\Statement\SwitchStatement', $this, $discriminant, $cases);
+            return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_SWITCH_STATEMENT, $this, $discriminant, $cases);
         }
 
         $oldInSwitch = $this->state->inSwitch;
@@ -2435,7 +2379,7 @@ class Parser
             $clause = $this->parseSwitchCase();
             if ($clause->test == null) {
                 if ($defaultFound) {
-                    $this->throwError(null, Messages::MultipleDefaultsInSwitch);
+                    $this->throwError(null, Messages::MORE_THAN_ONE_DEFAULT_CLAUSE_IN_SWITCH_STATEMENT);
                 }
                 $defaultFound = true;
             }
@@ -2446,7 +2390,7 @@ class Parser
 
         $this->expect('}');
 
-        return $node->finish('\EsprimaPhp\Node\Statement\SwitchStatement', $this, $discriminant, $cases);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_SWITCH_STATEMENT, $this, $discriminant, $cases);
     }
 
     private function parseSwitchCase()
@@ -2479,14 +2423,14 @@ class Parser
         $this->expectKeyword('throw');
 
         if ($this->peekLineTerminator()) {
-            $this->throwError(null, Messages::NewlineAfterThrow);
+            $this->throwError(null, Messages::ILLEGAL_NEWLINE_AFTER_THROW);
         }
 
         $argument = $this->parseExpression();
 
         $this->consumeSemicolon();
 
-        return $node->finish('\EsprimaPhp\Node\Statement\ThrowStatement', $this, $argument);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_THROW_STATEMENT, $this, $argument);
     }
 
     private function parseTryStatement(MutableNode $node)
@@ -2508,10 +2452,10 @@ class Parser
         }
 
         if (count($handlers) == 0 && !$finalizer) {
-            $this->throwError(null, Messages::NoCatchOrFinally);
+            $this->throwError(null, Messages::MISSING_CATCH_OR_FINALLY_AFTER_TRY);
         }
 
-        return $node->finish('\EsprimaPhp\Node\Statement\TryStatement', $this, $block, new ArrayList(), $handlers, $finalizer);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_TRY_STATEMENT, $this, $block, new ArrayList(), $handlers, $finalizer);
 
     }
 
@@ -2529,7 +2473,7 @@ class Parser
         $param = $this->parseVariableIdentifier();
         // 12.14.1
         if ($this->strict && Helper::isRestrictedWord($param->name)) {
-            $this->throwErrorTolerant(null, Messages::StrictCatchVariable);
+            $this->throwErrorTolerant(null, Messages::CATCH_VARIABLE_MAY_NOT_BE_EVAL_OR_ARGUMENTS_IN_STRICT_MODE);
         }
 
         $this->expect(')');
@@ -2545,7 +2489,7 @@ class Parser
 
         $this->consumeSemicolon();
 
-        return $node->finish('\EsprimaPhp\Node\Declaration\VariableDeclaration', $this, $declarations, 'var');
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_DECLARATION_VARIABLE_DECLARATION, $this, $declarations, 'var');
     }
 
     private function parseWhileStatement(MutableNode $node)
@@ -2559,7 +2503,7 @@ class Parser
         $body = $this->parseStatement();
         $this->state->inIteration = $oldInIteration;
 
-        return $node->finish('\EsprimaPhp\Node\Statement\WhileStatement', $this, $test, $body);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_WHILE_STATEMENT, $this, $test, $body);
     }
 
     private function parseWithStatement(MutableNode $node)
@@ -2567,7 +2511,7 @@ class Parser
         if ($this->strict) {
             // TODO(ikarienator): Should we update the test cases instead?
             $this->skipComment();
-            $this->throwErrorTolerant(null, Messages::StrictModeWith);
+            $this->throwErrorTolerant(null, Messages::STRICT_MODE_CODE_MAY_NOT_INCLUDE_A_WITH_STATEMENT);
         }
 
         $this->expectKeyword('with');
@@ -2580,7 +2524,7 @@ class Parser
 
         $body = $this->parseStatement();
 
-        return $node->finish('\EsprimaPhp\Node\Statement\WithStatement', $this, $object, $body);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_STATEMENT_WITH_STATEMENT, $this, $object, $body);
     }
 
     private function matchAssign()
@@ -2644,21 +2588,21 @@ class Parser
             } else {
                 $name = (string)$property->key->value;
             }
-            $kind = $property->kind == 'init' ? PropertyKind::Data : ($property->kind == 'get' ? PropertyKind::Get : PropertyKind::Set);
+            $kind = $property->kind == 'init' ? PropertyKind::DATA : ($property->kind == 'get' ? PropertyKind::GET : PropertyKind::SET);
 
             $key = '$' . $name;
             if (isset($map[$key])) {
-                if ($map[$key] == PropertyKind::Data) {
-                    if ($this->strict && $kind == PropertyKind::Data) {
-                        $this->throwErrorTolerant(null, Messages::StrictDuplicateProperty);
-                    } else if ($kind != PropertyKind::Data) {
-                        $this->throwErrorTolerant(null, Messages::AccessorDataProperty);
+                if ($map[$key] == PropertyKind::DATA) {
+                    if ($this->strict && $kind == PropertyKind::DATA) {
+                        $this->throwErrorTolerant(null, Messages::DUPLICATE_DATA_PROPERTY_IN_OBJECT_LITERAL_NOT_ALLOWED_IN_STRICT_MODE);
+                    } else if ($kind != PropertyKind::DATA) {
+                        $this->throwErrorTolerant(null, Messages::OBJECT_LITERAL_MAY_NOT_HAVE_DATA_AND_ACCESSOR_PROPERTY_WITH_THE_SAME_NAME);
                     }
                 } else {
-                    if ($kind == PropertyKind::Data) {
-                        $this->throwErrorTolerant(null, Messages::AccessorDataProperty);
+                    if ($kind == PropertyKind::DATA) {
+                        $this->throwErrorTolerant(null, Messages::OBJECT_LITERAL_MAY_NOT_HAVE_DATA_AND_ACCESSOR_PROPERTY_WITH_THE_SAME_NAME);
                     } else if ($map[$key] & $kind) {
-                        $this->throwErrorTolerant(null, Messages::AccessorGetSet);
+                        $this->throwErrorTolerant(null, Messages::OBJECT_LITERAL_MAY_NOT_HAVE_MULTIPLE_GET_SET_ACCESSORS_WITH_THE_SAME_NAME);
                     }
                 }
                 $map[$key] |= $kind;
@@ -2702,7 +2646,7 @@ class Parser
                 $token = $this->lookahead;
                 if ($token->type !== Token::IDENTIFIER) {
                     $this->expect(')');
-                    $this->throwErrorTolerant($token, Messages::UnexpectedToken, $token->value);
+                    $this->throwErrorTolerant($token, Messages::UNEXPECTED_TOKEN_S, $token->value);
                     $value = $this->parsePropertyFunction(new ArrayList());
                 } else {
                     $param = new ArrayList([$this->parseVariableIdentifier()]);
@@ -2734,13 +2678,13 @@ class Parser
 
         if ($token->type == Token::STRING_LITERAL || $token->type == Token::NUMERIC_LITERAL) {
             if ($this->strict && $token->octal) {
-                $this->throwErrorTolerant($token, Messages::StrictOctalLiteral);
+                $this->throwErrorTolerant($token, Messages::OCTAL_LITERALS_ARE_NOT_ALLOWED_IN_STRICT_MODE);
             }
 
-            return $node->finish('\EsprimaPhp\Node\Expression\Literal', $this, $token);
+            return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_EXPRESSION_LITERAL, $this, $token);
         }
 
-        return $node->finish('\EsprimaPhp\Node\Identifier', $this, $token->value);
+        return $node->finish(ClassNameConstants::ESPRIMA_PHP_NODE_IDENTIFIER, $this, $token->value);
     }
 
     private function parsePropertyFunction($param, $first = false)
@@ -2750,7 +2694,7 @@ class Parser
         $previousStrict = $this->strict;
         $body = $this->parseFunctionSourceElements();
         if ($first && $this->strict && Helper::isRestrictedWord(isset($param[0]) ? $param[0]->name : '')) {
-            $this->throwErrorTolerant($first, Messages::StrictParamName);
+            $this->throwErrorTolerant($first, Messages::PARAMETER_NAME_EVAL_OR_ARGUMENTS_IS_NOT_ALLOWED_IN_STRICT_MODE);
         }
         $this->strict = $previousStrict;
         return $node->finish($this, null, $param, new ArrayList(), $body);
@@ -2761,7 +2705,7 @@ class Parser
         if ($this->extra->errors) {
             $token = $this->lookahead;
             if ($token->type !== Token::PUNCTUATOR && $token->value != $value) {
-                $this->throwErrorTolerant($token, Messages::UnexpectedToken, $token->value);
+                $this->throwErrorTolerant($token, Messages::UNEXPECTED_TOKEN_S, $token->value);
             } else {
                 $this->lex();
             }
@@ -2783,15 +2727,15 @@ class Parser
             $id = $this->parseVariableIdentifier();
             if ($this->strict) {
                 if (Helper::isRestrictedWord($token->value)) {
-                    $this->throwErrorTolerant($token, Messages::StrictFunctionName);
+                    $this->throwErrorTolerant($token, Messages::FUNCTION_NAME_MAY_NOT_BE_EVAL_OR_ARGUMENTS_IN_STRICT_MODE);
                 }
             } else {
                 if (Helper::isRestrictedWord($token->value)) {
                     $firstRestricted = $token;
-                    $message = Messages::StrictFunctionName;
+                    $message = Messages::FUNCTION_NAME_MAY_NOT_BE_EVAL_OR_ARGUMENTS_IN_STRICT_MODE;
                 } else if (Helper::isStrictModeReservedWord($token->value)) {
                     $firstRestricted = $token;
-                    $message = Messages::StrictReservedWord;
+                    $message = Messages::USE_OF_FUTURE_RESERVED_WORD_IN_STRICT_MODE;
                 }
             }
         }
@@ -2878,6 +2822,66 @@ class Parser
         $this->expect(')');
 
         return $args;
+    }
+
+    private function initParserOptions($options)
+    {
+        if ($options !== null) {
+            if (array_key_exists('range', $options) && is_bool($options['range'])) {
+                $this->extra->range = $options['range'];
+            }
+            if (array_key_exists('loc', $options) && is_bool($options['loc'])) {
+                $this->extra->loc = $options['loc'];
+            }
+            if (array_key_exists('attachComment', $options) && is_bool($options['attachComment'])) {
+                $this->extra->attachComment = $options['attachComment'];
+            }
+            if ($this->extra->loc && array_key_exists('source', $options) && is_string($options['source'])) {
+                $this->extra->source = $options['source'];
+            }
+            if (array_key_exists('tokens', $options) && is_bool($options['tokens']) && $options['tokens']) {
+                $this->extra->tokens = new ArrayList();
+            }
+            if (array_key_exists('comment', $options) && is_bool($options['comment']) && $options['comment']) {
+                $this->extra->comments = new ArrayList();
+            }
+            if (array_key_exists('tolerant', $options) && is_bool($options['tolerant']) && $options['tolerant']) {
+                $this->extra->errors = new ArrayList();
+            }
+
+            if ($this->extra->attachComment) {
+                $this->extra->range = true;
+                $this->extra->comments = new ArrayList();
+                $this->extra->bottomRightStack = new ArrayList();
+                $this->extra->trailingComments = new ArrayList();
+                $this->extra->leadingComments = new ArrayList();
+            }
+        }
+    }
+
+    private function initTokenizerOptions($options)
+    {
+        $options = $options ?: array();
+
+        $options['tokens'] = true;
+        $this->extra->tokens = new ArrayList();
+        $this->extra->tokenize = true;
+        // The following two fields are necessary to compute the Regex tokens.
+        $this->extra->openParenToken = -1;
+        $this->extra->openCurlyToken = -1;
+
+        if (array_key_exists('range', $options) && is_bool($options['range'])) {
+            $this->extra->range = $options['range'];
+        }
+        if (array_key_exists('loc', $options) && is_bool($options['loc'])) {
+            $this->extra->loc = $options['loc'];
+        }
+        if (array_key_exists('comment', $options) && is_bool($options['comment']) && $options['comment']) {
+            $this->extra->comments = new ArrayList();
+        }
+        if (array_key_exists('tolerant', $options) && is_bool($options['tolerant']) && $options['tolerant']) {
+            $this->extra->errors = new ArrayList();
+        }
     }
 
 } 

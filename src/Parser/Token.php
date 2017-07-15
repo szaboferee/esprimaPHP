@@ -16,8 +16,22 @@ class Token implements \JsonSerializable
     const PUNCTUATOR = 7;
     const STRING_LITERAL = 8;
     const REGULAR_EXPRESSION = 9;
+
+    static private $tokenNameMap = array(
+        self::BOOLEAN_LITERAL => TokenName::BOOLEAN_LITERAL,
+        self::EOF => TokenName::EOF,
+        self::IDENTIFIER => TokenName::IDENTIFIER,
+        self::KEYWORD => TokenName::KEYWORD,
+        self::NULL_LITERAL => TokenName::NULL_LITERAL,
+        self::NUMERIC_LITERAL => TokenName::NUMERIC_LITERAL,
+        self::PUNCTUATOR => TokenName::PUNCTUATOR,
+        self::STRING_LITERAL => TokenName::STRING_LITERAL,
+        self::REGULAR_EXPRESSION => TokenName::REGULAR_EXPRESSION,
+    );
+
     public $type;
     public $value;
+
     /**
      * @var Regex
      */
@@ -41,29 +55,17 @@ class Token implements \JsonSerializable
         $this->end = $end;
     }
 
+    /**
+     * @param $token
+     * @return string
+     * @throws InvalidArgumentException
+     */
     public static function name($token)
     {
-        switch ($token) {
-            case self::BOOLEAN_LITERAL:
-                return TokenName::BOOLEAN_LITERAL;
-            case self::EOF:
-                return TokenName::EOF;
-            case self::IDENTIFIER:
-                return TokenName::IDENTIFIER;
-            case self::KEYWORD:
-                return TokenName::KEYWORD;
-            case self::NULL_LITERAL:
-                return TokenName::NULL_LITERAL;
-            case self::NUMERIC_LITERAL:
-                return TokenName::NUMERIC_LITERAL;
-            case self::PUNCTUATOR:
-                return TokenName::PUNCTUATOR;
-            case self::STRING_LITERAL:
-                return TokenName::STRING_LITERAL;
-            case self::REGULAR_EXPRESSION:
-                return TokenName::REGULAR_EXPRESSION;
-            default:
-                throw new InvalidArgumentException("Invalid token: {" . $token . "}");
+        if (array_key_exists($token, self::$tokenNameMap)) {
+            return self::$tokenNameMap[$token];
+        } else {
+            throw new InvalidArgumentException("Invalid token: {" . $token . "}");
         }
     }
 

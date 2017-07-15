@@ -27,7 +27,7 @@ class Node implements JsonSerializable, \Iterator, \RecursiveIterator
         if ($startToken) {
             $this->wrappingNode($esprima, $startToken);
         } else {
-            $this->node($esprima);
+            $this->simpleNode($esprima);
         }
 
     }
@@ -50,7 +50,7 @@ class Node implements JsonSerializable, \Iterator, \RecursiveIterator
     /**
      * @param Parser $esprima
      */
-    protected function node($esprima)
+    protected function simpleNode($esprima)
     {
         $esprima->index = $esprima->lookahead->start;
         if ($esprima->lookahead->type === Token::STRING_LITERAL) {
@@ -99,10 +99,8 @@ class Node implements JsonSerializable, \Iterator, \RecursiveIterator
         $bottomRight = $esprima->extra->bottomRightStack;
         $last = count($bottomRight) ? $bottomRight[count($bottomRight) - 1] : null;
 
-        if ($this->type === Syntax::PROGRAM) {
-            if (count($this->body) > 0) {
+        if ($this->type === Syntax::PROGRAM && count($this->body) > 0) {
                 return;
-            }
         }
 
         if (count($esprima->extra->trailingComments) > 0) {

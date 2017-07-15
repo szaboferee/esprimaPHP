@@ -10,7 +10,7 @@ namespace EsprimaPhp;
 
 class PropertyKind
 {
-    const Data = 1;
-    const Get = 2;
-    const Set = 4;
+    const DATA = 1;
+    const GET = 2;
+    const SET = 4;
 }

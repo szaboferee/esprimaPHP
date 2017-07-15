@@ -9,6 +9,10 @@ class SourceString implements ArrayAccess, JsonSerializable
 {
     private $string = '';
 
+    const UTF_8 = 'UTF-8';
+
+    const UTF_32_BE = 'UTF-32BE';
+
     public function __construct($string)
     {
         if (is_bool($string)) {
@@ -27,10 +31,10 @@ class SourceString implements ArrayAccess, JsonSerializable
 
     public function charCodeAt($index)
     {
-        $char = mb_substr($this->string, $index, 1, 'UTF-8');
+        $char = mb_substr($this->string, $index, 1, self::UTF_8);
 
-        if (mb_check_encoding($char, 'UTF-8')) {
-            $ret = mb_convert_encoding($char, 'UTF-32BE', 'UTF-8');
+        if (mb_check_encoding($char, self::UTF_8)) {
+            $ret = mb_convert_encoding($char, self::UTF_32_BE, self::UTF_8);
             return hexdec(bin2hex($ret));
         } else {
             return null;
@@ -40,7 +44,7 @@ class SourceString implements ArrayAccess, JsonSerializable
     public function slice($start, $end)
     {
         $end = $end - $start;
-        return mb_substr($this->string, $start, $end, 'UTF-8');
+        return mb_substr($this->string, $start, $end, self::UTF_8);
     }
 
     public function offsetGet($offset)

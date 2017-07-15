@@ -33,7 +33,7 @@ class SourceLocation
         if ($startToken) {
             return self::wrappingSourceLocation($startToken);
         } else {
-            return self::sourceLocation($parser);
+            return self::simpleSourceLocation($parser);
         }
     }
 
@@ -67,7 +67,7 @@ class SourceLocation
      * @param $parser
      * @return SourceLocation
      */
-    protected static function sourceLocation($parser)
+    protected static function simpleSourceLocation($parser)
     {
         return new self(
             Position::createFromParser($parser),
