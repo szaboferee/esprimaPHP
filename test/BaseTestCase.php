@@ -155,7 +155,7 @@ abstract class BaseTestCase extends \PHPUnit_Framework_TestCase
         $debug = 0;
 
         if (!is_object($expectedTree)) {
-            $this->markTestIncomplete("invalid json");
+            $this->markTestIncomplete("invalid json : " . $expectedTree);
         }
 
         $options = [

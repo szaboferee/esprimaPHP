@@ -254,7 +254,6 @@ class InvalidSyntaxTest extends BaseTestCase
         foreach ($fixture as $code => $json) {
             $ret[$code] = json_decode($json);
         }
-
         return $ret;
     }
 }
