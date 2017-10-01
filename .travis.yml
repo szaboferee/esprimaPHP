@@ -7,7 +7,10 @@ cache:
     - '$HOME/.sonar/cache'
 
 language: php
-php: 5.5
+php: 
+  - '5.6'
+  - '7.0'
+  - '7.1'
 before_script: composer install --dev
 script:
   - ./vendor/bin/phpunit --tap --bootstrap ./vendor/autoload.php -v --coverage-clover build/logs/clover.xml --log-junit build/logs/phpunit.xml test
